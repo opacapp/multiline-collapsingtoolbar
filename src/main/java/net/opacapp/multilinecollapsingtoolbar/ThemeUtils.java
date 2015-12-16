@@ -17,7 +17,6 @@ package net.opacapp.multilinecollapsingtoolbar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.design.R;
 
 class ThemeUtils {
     private static final int[] APPCOMPAT_CHECK_ATTRS = {R.attr.colorPrimary};
