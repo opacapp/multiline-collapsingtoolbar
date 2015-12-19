@@ -4,7 +4,7 @@ _multiline-collapsingtoolbar_ is a replacement for `CollapsingToolbarLayout` fro
 ## Example
 Here you can see the library in use in the [Web Opac App](https://github.com/opacapp/opacclient):
 
-![Demo image](https://de.opacapp.net/multiline-collapsingtoolbar/demo.gif)
+![Demo image](https://drop.rami.io/0DyEN/)
 
 Background Image credit: [_Tom Murphy VII_ on Wikimedia Commons, CC-BY-SA 3.0](https://commons.wikimedia.org/wiki/File:Old_book_bindings.jpg)
 
