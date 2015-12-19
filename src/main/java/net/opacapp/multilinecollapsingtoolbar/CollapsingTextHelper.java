@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2015 The Android Open Source Project
- * Modified 2015 by Johan v. Forstner
+ * Modified 2015 by Johan v. Forstner (modifications are marked with comments)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,10 @@ import android.os.Build;
 import android.support.v4.text.TextDirectionHeuristicsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
+// BEGIN MODIFICATION: Added imports
 import android.text.Layout;
 import android.text.StaticLayout;
+// END MODIFICATION
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -52,8 +54,10 @@ final class CollapsingTextHelper {
     }
 
     private final View mView;
+
     private boolean mDrawTitle;
     private float mExpandedFraction;
+
     private final Rect mExpandedBounds;
     private final Rect mCollapsedBounds;
     private final RectF mCurrentBounds;
@@ -63,6 +67,7 @@ final class CollapsingTextHelper {
     private float mCollapsedTextSize = 15;
     private int mExpandedTextColor;
     private int mCollapsedTextColor;
+
     private float mExpandedDrawY;
     private float mCollapsedDrawY;
     private float mExpandedDrawX;
@@ -72,40 +77,48 @@ final class CollapsingTextHelper {
     private Typeface mCollapsedTypeface;
     private Typeface mExpandedTypeface;
     private Typeface mCurrentTypeface;
+
     private CharSequence mText;
     private CharSequence mTextToDraw;
-    private CharSequence mTextToDrawCollapsed;
     private boolean mIsRtl;
+
     private boolean mUseTexture;
-    private Bitmap mCollapsedTitleTexture;
     private Bitmap mExpandedTitleTexture;
     private Paint mTexturePaint;
+    // MODIFICATION: Removed now unused fields mTextureAscent and mTextureDescent
+
     private float mScale;
     private float mCurrentTextSize;
+
     private boolean mBoundsChanged;
+
     private final TextPaint mTextPaint;
+
     private Interpolator mPositionInterpolator;
     private Interpolator mTextSizeInterpolator;
-    private Interpolator mTextBlendInterpolator;
+
     private float mCollapsedShadowRadius, mCollapsedShadowDx, mCollapsedShadowDy;
     private int mCollapsedShadowColor;
+
     private float mExpandedShadowRadius, mExpandedShadowDx, mExpandedShadowDy;
     private int mExpandedShadowColor;
+
+    // BEGIN MODIFICATION: Added fields
+    private CharSequence mTextToDrawCollapsed;
+    private Bitmap mCollapsedTitleTexture;
     private StaticLayout mTextLayout;
     private float mTextBlend;
+    // END MODIFICATION
 
     public CollapsingTextHelper(View view) {
         mView = view;
+
         mTextPaint = new TextPaint();
         mTextPaint.setAntiAlias(true);
+
         mCollapsedBounds = new Rect();
         mExpandedBounds = new Rect();
         mCurrentBounds = new RectF();
-    }
-
-    void setTextBlendInterpolator(Interpolator interpolator) {
-        mTextBlendInterpolator = interpolator;
-        recalculate();
     }
 
     void setTextSizeInterpolator(Interpolator interpolator) {
@@ -204,9 +217,11 @@ final class CollapsingTextHelper {
         mCollapsedShadowDy = a.getFloat(R.styleable.TextAppearance_android_shadowDy, 0);
         mCollapsedShadowRadius = a.getFloat(R.styleable.TextAppearance_android_shadowRadius, 0);
         a.recycle();
+
         if (Build.VERSION.SDK_INT >= 16) {
             mCollapsedTypeface = readFontFamilyTypeface(resId);
         }
+
         recalculate();
     }
 
@@ -225,9 +240,11 @@ final class CollapsingTextHelper {
         mExpandedShadowDy = a.getFloat(R.styleable.TextAppearance_android_shadowDy, 0);
         mExpandedShadowRadius = a.getFloat(R.styleable.TextAppearance_android_shadowRadius, 0);
         a.recycle();
+
         if (Build.VERSION.SDK_INT >= 16) {
             mExpandedTypeface = readFontFamilyTypeface(resId);
         }
+
         recalculate();
     }
 
@@ -281,6 +298,7 @@ final class CollapsingTextHelper {
      */
     void setExpansionFraction(float fraction) {
         fraction = MathUtils.constrain(fraction, 0f, 1f);
+
         if (fraction != mExpandedFraction) {
             mExpandedFraction = fraction;
             calculateCurrentOffsets();
@@ -311,7 +329,11 @@ final class CollapsingTextHelper {
                 mPositionInterpolator);
         setInterpolatedTextSize(lerp(mExpandedTextSize, mCollapsedTextSize,
                 fraction, mTextSizeInterpolator));
-        setTextBlend(lerp(0, 1, fraction, mTextBlendInterpolator));
+
+        // BEGIN MODIFICATION: set text blending
+        setTextBlend(lerp(0, 1, fraction, null));
+        // END MODIFICATION
+
         if (mCollapsedTextColor != mExpandedTextColor) {
             // If the collapsed and expanded text colors are different, blend them based on the
             // fraction
@@ -331,11 +353,18 @@ final class CollapsingTextHelper {
         final float currentTextSize = mCurrentTextSize;
         // We then calculate the collapsed text size, using the same logic
         calculateUsingTextSize(mCollapsedTextSize);
+
+        // BEGIN MODIFICATION: set mTextToDrawCollapsed and calculate width using mTextLayout
         mTextToDrawCollapsed = mTextToDraw;
         float width = mTextLayout != null ? mTextLayout.getWidth() : 0;
+        // END MODIFICATION
+
         final int collapsedAbsGravity = GravityCompat.getAbsoluteGravity(mCollapsedTextGravity,
                 mIsRtl ? ViewCompat.LAYOUT_DIRECTION_RTL : ViewCompat.LAYOUT_DIRECTION_LTR);
+
+        // BEGIN MODIFICATION: calculate height and Y position using mTextLayout
         float textHeight = mTextLayout != null ? mTextLayout.getHeight() : 0;
+
         switch (collapsedAbsGravity & Gravity.VERTICAL_GRAVITY_MASK) {
             case Gravity.BOTTOM:
                 mCollapsedDrawY = mCollapsedBounds.bottom - textHeight;
@@ -349,6 +378,8 @@ final class CollapsingTextHelper {
                 mCollapsedDrawY = mCollapsedBounds.centerY() - textOffset;
                 break;
         }
+        // END MODIFICATION
+
         switch (collapsedAbsGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
             case Gravity.CENTER_HORIZONTAL:
                 mCollapsedDrawX = mCollapsedBounds.centerX() - (width / 2);
@@ -361,10 +392,17 @@ final class CollapsingTextHelper {
                 mCollapsedDrawX = mCollapsedBounds.left;
                 break;
         }
+
         calculateUsingTextSize(mExpandedTextSize);
+
+        // BEGIN MODIFICATION: calculate width using mTextLayout
         width = mTextLayout != null ? mTextLayout.getWidth() : 0;
+        // END MODIFICATION
+
         final int expandedAbsGravity = GravityCompat.getAbsoluteGravity(mExpandedTextGravity,
                 mIsRtl ? ViewCompat.LAYOUT_DIRECTION_RTL : ViewCompat.LAYOUT_DIRECTION_LTR);
+
+        // BEGIN MODIFICATION: calculate height and Y position using mTextLayout
         textHeight = mTextLayout != null ? mTextLayout.getHeight() : 0;
         switch (expandedAbsGravity & Gravity.VERTICAL_GRAVITY_MASK) {
             case Gravity.BOTTOM:
@@ -379,6 +417,8 @@ final class CollapsingTextHelper {
                 mExpandedDrawY = mExpandedBounds.centerY() - textOffset;
                 break;
         }
+        // END MODIFICATION
+
         switch (expandedAbsGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
             case Gravity.CENTER_HORIZONTAL:
                 mExpandedDrawX = mExpandedBounds.centerX() - (width / 2);
@@ -391,6 +431,7 @@ final class CollapsingTextHelper {
                 mExpandedDrawX = mExpandedBounds.left;
                 break;
         }
+
         // The bounds have changed so we need to clear the texture
         clearTexture();
         // Now reset the text size back to the original
@@ -410,18 +451,25 @@ final class CollapsingTextHelper {
 
     public void draw(Canvas canvas) {
         final int saveCount = canvas.save();
+
         if (mTextToDraw != null && mDrawTitle) {
             float x = mCurrentDrawX;
             float y = mCurrentDrawY;
+
             final boolean drawTexture = mUseTexture && mExpandedTitleTexture != null;
             final float ascent;
+            // MODIFICATION: removed now unused "descent" variable declaration
+
             // Update the TextPaint to the current text size
             mTextPaint.setTextSize(mCurrentTextSize);
+
+            // BEGIN MODIFICATION: new drawing code
             if (drawTexture) {
                 ascent = 0;
             } else {
                 ascent = mTextPaint.ascent() * mScale;
             }
+
             if (DEBUG_DRAW) {
                 // Just a debug tool, which drawn a Magneta rect in the text bounds
                 canvas.drawRect(mCurrentBounds.left, y, mCurrentBounds.right,
@@ -445,10 +493,12 @@ final class CollapsingTextHelper {
                 canvas.drawText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length(), 0,
                         -ascent / mScale, mTextPaint);
             }
+            // END MODIFICATION
         }
         canvas.restoreToCount(saveCount);
     }
 
+    // BEGIN MODIFICATION: new getCrossfadeAlpha function
     /**
      * Calculate alpha values for "square crossfade" between two images with transparency see
      * http://javagraphics.blogspot.de/2008/06/crossfades-what-is-and-isnt-possible.html
@@ -464,6 +514,7 @@ final class CollapsingTextHelper {
                 ? TextDirectionHeuristicsCompat.FIRSTSTRONG_RTL
                 : TextDirectionHeuristicsCompat.FIRSTSTRONG_LTR).isRtl(text, 0, text.length());
     }
+    // END MODIFICATION
 
     private void setInterpolatedTextSize(float textSize) {
         calculateUsingTextSize(textSize);
@@ -472,22 +523,28 @@ final class CollapsingTextHelper {
         if (mUseTexture) {
             // Make sure we have an expanded texture if needed
             ensureExpandedTexture();
+            // BEGIN MODIFICATION: added collapsed texture
             ensureCollapsedTexture();
         }
         ViewCompat.postInvalidateOnAnimation(mView);
+        // END MODIFICATION
     }
 
+    // BEGIN MODIFICATION: new setTextBlend method
     private void setTextBlend(float blend) {
         mTextBlend = blend;
         ViewCompat.postInvalidateOnAnimation(mView);
     }
+    // END MODIFICATION
 
     private void calculateUsingTextSize(final float textSize) {
         if (mText == null) return;
         final float availableWidth;
         final float newTextSize;
         boolean updateDrawText = false;
+        // BEGIN MODIFICATION: Add maxLines variable
         int maxLines;
+        // END MODIFICATION
         if (isClose(textSize, mCollapsedTextSize)) {
             availableWidth = mCollapsedBounds.width();
             newTextSize = mCollapsedTextSize;
@@ -496,7 +553,9 @@ final class CollapsingTextHelper {
                 mCurrentTypeface = mCollapsedTypeface;
                 updateDrawText = true;
             }
+            // BEGIN MODIFICATION: Set maxLines variable
             maxLines = 1;
+            // END MODIFICATION
         } else {
             availableWidth = mExpandedBounds.width();
             newTextSize = mExpandedTextSize;
@@ -511,7 +570,9 @@ final class CollapsingTextHelper {
                 // Else, we'll scale down from the expanded text size
                 mScale = textSize / mExpandedTextSize;
             }
+            // BEGIN MODIFICATION: Set maxLines variable
             maxLines = 3;
+            // END MODIFICATION
         }
         if (availableWidth > 0) {
             updateDrawText = (mCurrentTextSize != newTextSize) || mBoundsChanged || updateDrawText;
@@ -522,6 +583,7 @@ final class CollapsingTextHelper {
             mTextPaint.setTextSize(mCurrentTextSize);
             mTextPaint.setTypeface(mCurrentTypeface);
 
+            // BEGIN MODIFICATION: Text layout creation and text truncation
             StaticLayout layout = new StaticLayout(mText, mTextPaint, (int) availableWidth,
                     Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
             CharSequence truncatedText;
@@ -553,6 +615,7 @@ final class CollapsingTextHelper {
             }
             mTextLayout = new StaticLayout(mTextToDraw, mTextPaint, (int) availableWidth,
                     Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+            // END MODIFICATION
         }
     }
 
@@ -562,20 +625,29 @@ final class CollapsingTextHelper {
             return;
         }
         calculateOffsets(0f);
+
+        // BEGIN MODIFICATION: Calculate width and height using mTextLayout and remove
+        // mTextureAscent and mTextureDescent assignment
         final int w = mTextLayout.getWidth();
         final int h = mTextLayout.getHeight();
+        // END MODIFICATION
+
         if (w <= 0 && h <= 0) {
             return; // If the width or height are 0, return
         }
         mExpandedTitleTexture = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+
+        // BEGIN MODIFICATION: Draw text using mTextLayout
         Canvas c = new Canvas(mExpandedTitleTexture);
         mTextLayout.draw(c);
+        // END MODIFICATION
         if (mTexturePaint == null) {
             // Make sure we have a paint
             mTexturePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         }
     }
 
+    // BEGIN MODIFICATION: new ensureCollapsedTexture method
     private void ensureCollapsedTexture() {
         if (mCollapsedTitleTexture != null || mCollapsedBounds.isEmpty()
                 || TextUtils.isEmpty(mTextToDraw)) {
@@ -596,6 +668,7 @@ final class CollapsingTextHelper {
             mTexturePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         }
     }
+    // END MODIFICATION
 
     public void recalculate() {
         if (mView.getHeight() > 0 && mView.getWidth() > 0) {
