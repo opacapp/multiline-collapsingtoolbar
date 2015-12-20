@@ -10,7 +10,8 @@ Background Image credit: [_Tom Murphy VII_ on Wikimedia Commons, CC-BY-SA 3.0](h
 
 ## Installation
 
-If you are using gradle and the JCenter maven repository, installing the library is as simple as adding a new dependency statement.
+If you are using Gradle and the JCenter Maven Repository, installing the library is as simple as
+adding a new dependency statement.
 
 ```gradle
 dependencies {
@@ -20,6 +21,8 @@ dependencies {
 
 ## Usage
 The library's public API is identical to the version from the support library, so you can use it as a drop-in replacement.
+
+As the Design Support Library, it should be compatible with API 7 (Android 2.1) and above.
 
 XML layout example:
 ```xml
@@ -37,6 +40,8 @@ XML layout example:
     </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 </android.support.design.widget.AppBarLayout>
 ```
+
+You can find a simple demo application in the `demo` module.
 
 ## Implementation details
 Most of the code is copied from the original Support Library classes, the only changes (apart from the package name, imports and automatic code reformatting) are in the `CollapsingTextHelper` class. The changes there are marked with comments.
