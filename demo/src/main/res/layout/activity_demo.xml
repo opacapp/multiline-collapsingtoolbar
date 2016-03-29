@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="192dp"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:background="?attr/colorPrimary">
+        android:background="?attr/colorPrimary"
+        android:fitsSystemWindows="true">
 
         <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
             android:layout_width="match_parent"

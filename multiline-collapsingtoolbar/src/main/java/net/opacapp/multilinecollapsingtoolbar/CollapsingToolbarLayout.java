@@ -92,9 +92,9 @@ public class CollapsingToolbarLayout extends FrameLayout {
     private int mToolbarId;
     private Toolbar mToolbar;
     private View mDummyView;
-    private int mExpandedMarginLeft;
+    private int mExpandedMarginStart;
     private int mExpandedMarginTop;
-    private int mExpandedMarginRight;
+    private int mExpandedMarginEnd;
     private int mExpandedMarginBottom;
     private final Rect mTmpRect = new Rect();
     private final CollapsingTextHelper mCollapsingTextHelper;
@@ -131,27 +131,15 @@ public class CollapsingToolbarLayout extends FrameLayout {
         mCollapsingTextHelper.setCollapsedTextGravity(
                 a.getInt(R.styleable.CollapsingToolbarLayout_collapsedTitleGravity,
                         GravityCompat.START | Gravity.CENTER_VERTICAL));
-        mExpandedMarginLeft = mExpandedMarginTop = mExpandedMarginRight = mExpandedMarginBottom =
+        mExpandedMarginStart = mExpandedMarginTop = mExpandedMarginEnd = mExpandedMarginBottom =
                 a.getDimensionPixelSize(R.styleable.CollapsingToolbarLayout_expandedTitleMargin, 0);
-        final boolean isRtl = ViewCompat.getLayoutDirection(this)
-                == ViewCompat.LAYOUT_DIRECTION_RTL;
         if (a.hasValue(R.styleable.CollapsingToolbarLayout_expandedTitleMarginStart)) {
-            final int marginStart = a.getDimensionPixelSize(
+            mExpandedMarginStart = a.getDimensionPixelSize(
                     R.styleable.CollapsingToolbarLayout_expandedTitleMarginStart, 0);
-            if (isRtl) {
-                mExpandedMarginRight = marginStart;
-            } else {
-                mExpandedMarginLeft = marginStart;
-            }
         }
         if (a.hasValue(R.styleable.CollapsingToolbarLayout_expandedTitleMarginEnd)) {
-            final int marginEnd = a.getDimensionPixelSize(
+            mExpandedMarginEnd = a.getDimensionPixelSize(
                     R.styleable.CollapsingToolbarLayout_expandedTitleMarginEnd, 0);
-            if (isRtl) {
-                mExpandedMarginLeft = marginEnd;
-            } else {
-                mExpandedMarginRight = marginEnd;
-            }
         }
         if (a.hasValue(R.styleable.CollapsingToolbarLayout_expandedTitleMarginTop)) {
             mExpandedMarginTop = a.getDimensionPixelSize(
@@ -340,11 +328,13 @@ public class CollapsingToolbarLayout extends FrameLayout {
                 ViewGroupUtils.getDescendantRect(this, mDummyView, mTmpRect);
                 mCollapsingTextHelper.setCollapsedBounds(mTmpRect.left, bottom - mTmpRect.height(),
                         mTmpRect.right, bottom);
+                final boolean isRtl = ViewCompat.getLayoutDirection(this)
+                        == ViewCompat.LAYOUT_DIRECTION_RTL;
                 // Update the expanded bounds
                 mCollapsingTextHelper.setExpandedBounds(
-                        mExpandedMarginLeft,
+                        isRtl ? mExpandedMarginEnd : mExpandedMarginStart,
                         mTmpRect.bottom + mExpandedMarginTop,
-                        right - left - mExpandedMarginRight,
+                        right - left - (isRtl ? mExpandedMarginStart : mExpandedMarginEnd),
                         bottom - top - mExpandedMarginBottom);
                 // Now recalculate using the new bounds
                 mCollapsingTextHelper.recalculate();
@@ -468,7 +458,10 @@ public class CollapsingToolbarLayout extends FrameLayout {
         if (mScrimAnimator == null) {
             mScrimAnimator = ViewUtils.createAnimator();
             mScrimAnimator.setDuration(SCRIM_ANIMATION_DURATION);
-            mScrimAnimator.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+            mScrimAnimator.setInterpolator(
+                    targetAlpha > mScrimAlpha
+                            ? AnimationUtils.FAST_OUT_LINEAR_IN_INTERPOLATOR
+                            : AnimationUtils.LINEAR_OUT_SLOW_IN_INTERPOLATOR);
             mScrimAnimator.setUpdateListener(new ValueAnimatorCompat.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimatorCompat animator) {
@@ -632,7 +625,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
      * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_collapsedTitleGravity
      */
     public void setCollapsedTitleGravity(int gravity) {
-        mCollapsingTextHelper.setExpandedTextGravity(gravity);
+        mCollapsingTextHelper.setCollapsedTextGravity(gravity);
     }
 
     /**
@@ -716,6 +709,113 @@ public class CollapsingToolbarLayout extends FrameLayout {
     @NonNull
     public Typeface getExpandedTitleTypeface() {
         return mCollapsingTextHelper.getExpandedTypeface();
+    }
+
+    /**
+     * Sets the expanded title margins.
+     *
+     * @param start the starting title margin in pixels
+     * @param top the top title margin in pixels
+     * @param end the ending title margin in pixels
+     * @param bottom the bottom title margin in pixels
+     *
+     * @see #getExpandedTitleMarginStart()
+     * @see #getExpandedTitleMarginTop()
+     * @see #getExpandedTitleMarginEnd()
+     * @see #getExpandedTitleMarginBottom()
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMargin
+     */
+    public void setExpandedTitleMargin(int start, int top, int end, int bottom) {
+        mExpandedMarginStart = start;
+        mExpandedMarginTop = top;
+        mExpandedMarginEnd = end;
+        mExpandedMarginBottom = bottom;
+        requestLayout();
+    }
+
+    /**
+     * @return the starting expanded title margin in pixels
+     *
+     * @see #setExpandedTitleMarginStart(int)
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMarginStart
+     */
+    public int getExpandedTitleMarginStart() {
+        return mExpandedMarginStart;
+    }
+
+    /**
+     * Sets the starting expanded title margin in pixels.
+     *
+     * @param margin the starting title margin in pixels
+     * @see #getExpandedTitleMarginStart()
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMarginStart
+     */
+    public void setExpandedTitleMarginStart(int margin) {
+        mExpandedMarginStart = margin;
+        requestLayout();
+    }
+
+    /**
+     * @return the top expanded title margin in pixels
+     * @see #setExpandedTitleMarginTop(int)
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMarginTop
+     */
+    public int getExpandedTitleMarginTop() {
+        return mExpandedMarginTop;
+    }
+
+    /**
+     * Sets the top expanded title margin in pixels.
+     *
+     * @param margin the top title margin in pixels
+     * @see #getExpandedTitleMarginTop()
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMarginTop
+     */
+    public void setExpandedTitleMarginTop(int margin) {
+        mExpandedMarginTop = margin;
+        requestLayout();
+    }
+
+    /**
+     * @return the ending expanded title margin in pixels
+     * @see #setExpandedTitleMarginEnd(int)
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMarginEnd
+     */
+    public int getExpandedTitleMarginEnd() {
+        return mExpandedMarginEnd;
+    }
+
+    /**
+     * Sets the ending expanded title margin in pixels.
+     *
+     * @param margin the ending title margin in pixels
+     * @see #getExpandedTitleMarginEnd()
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMarginEnd
+     */
+    public void setExpandedTitleMarginEnd(int margin) {
+        mExpandedMarginEnd = margin;
+        requestLayout();
+    }
+
+    /**
+     * @return the bottom expanded title margin in pixels
+     * @see #setExpandedTitleMarginBottom(int)
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMarginBottom
+     */
+    public int getExpandedTitleMarginBottom() {
+        return mExpandedMarginBottom;
+    }
+
+    /**
+     * Sets the bottom expanded title margin in pixels.
+     *
+     * @param margin the bottom title margin in pixels
+     * @see #getExpandedTitleMarginBottom()
+     * @attr ref android.support.design.R.styleable#CollapsingToolbarLayout_expandedTitleMarginBottom
+     */
+    public void setExpandedTitleMarginBottom(int margin) {
+        mExpandedMarginBottom = margin;
+        requestLayout();
     }
 
     /**

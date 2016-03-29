@@ -632,7 +632,7 @@ final class CollapsingTextHelper {
         final int h = mTextLayout.getHeight();
         // END MODIFICATION
 
-        if (w <= 0 && h <= 0) {
+        if (w <= 0 || h <= 0) {
             return; // If the width or height are 0, return
         }
         mExpandedTitleTexture = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
