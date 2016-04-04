@@ -106,8 +106,10 @@ final class CollapsingTextHelper {
     // BEGIN MODIFICATION: Added fields
     private CharSequence mTextToDrawCollapsed;
     private Bitmap mCollapsedTitleTexture;
+    private Bitmap mCrossSectionTitleTexture;
     private StaticLayout mTextLayout;
-    private float mTextBlend;
+    private float mCollapsedTextBlend;
+    private float mExpandedTextBlend;
     // END MODIFICATION
 
     public CollapsingTextHelper(View view) {
@@ -331,7 +333,10 @@ final class CollapsingTextHelper {
                 fraction, mTextSizeInterpolator));
 
         // BEGIN MODIFICATION: set text blending
-        setTextBlend(lerp(0, 1, fraction, null));
+        setCollapsedTextBlend(1-lerp(0, 1, 1-fraction, AnimationUtils
+                .FAST_OUT_SLOW_IN_INTERPOLATOR));
+        setExpandedTextBlend(lerp(1, 0, fraction, AnimationUtils
+                .FAST_OUT_SLOW_IN_INTERPOLATOR));
         // END MODIFICATION
 
         if (mCollapsedTextColor != mExpandedTextColor) {
@@ -481,30 +486,32 @@ final class CollapsingTextHelper {
             }
             if (drawTexture) {
                 // If we should use a texture, draw it instead of text
-                mTexturePaint.setAlpha(getCrossfadeAlpha(mTextBlend));
+                // Expanded text
+                mTexturePaint.setAlpha((int) (mExpandedTextBlend * 255));
                 canvas.drawBitmap(mExpandedTitleTexture, x, y, mTexturePaint);
-                mTexturePaint.setAlpha(getCrossfadeAlpha(1 - mTextBlend));
+                // Collapsed text
+                mTexturePaint.setAlpha((int) (mCollapsedTextBlend * 255));
                 canvas.drawBitmap(mCollapsedTitleTexture, x, y, mTexturePaint);
+                // Cross-section between both texts (should stay at alpha = 255)
+                mTexturePaint.setAlpha(255);
+                canvas.drawBitmap(mCrossSectionTitleTexture, x, y, mTexturePaint);
             } else {
                 canvas.translate(x, y);
-                mTextPaint.setAlpha(getCrossfadeAlpha(mTextBlend));
+                // Expanded text
+                mTextPaint.setAlpha((int) ( mExpandedTextBlend * 255));
                 mTextLayout.draw(canvas);
-                mTextPaint.setAlpha(getCrossfadeAlpha(1 - mTextBlend));
+                // Collapsed text
+                mTextPaint.setAlpha((int) (mCollapsedTextBlend * 255));
                 canvas.drawText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length(), 0,
                         -ascent / mScale, mTextPaint);
+                // Cross-section between both texts (should stay at alpha = 255)
+                mTextPaint.setAlpha(255);
+                canvas.drawText(mTextToDraw, mTextLayout.getLineStart(0),
+                        mTextLayout.getLineEnd(0), 0, -ascent / mScale, mTextPaint);
             }
             // END MODIFICATION
         }
         canvas.restoreToCount(saveCount);
-    }
-
-    // BEGIN MODIFICATION: new getCrossfadeAlpha function
-    /**
-     * Calculate alpha values for "square crossfade" between two images with transparency see
-     * http://javagraphics.blogspot.de/2008/06/crossfades-what-is-and-isnt-possible.html
-     */
-    private static int getCrossfadeAlpha(float f) {
-        return (int) ((1 - Math.pow(f, 2)) * 255);
     }
 
     private boolean calculateIsRtl(CharSequence text) {
@@ -514,7 +521,6 @@ final class CollapsingTextHelper {
                 ? TextDirectionHeuristicsCompat.FIRSTSTRONG_RTL
                 : TextDirectionHeuristicsCompat.FIRSTSTRONG_LTR).isRtl(text, 0, text.length());
     }
-    // END MODIFICATION
 
     private void setInterpolatedTextSize(float textSize) {
         calculateUsingTextSize(textSize);
@@ -523,16 +529,22 @@ final class CollapsingTextHelper {
         if (mUseTexture) {
             // Make sure we have an expanded texture if needed
             ensureExpandedTexture();
-            // BEGIN MODIFICATION: added collapsed texture
+            // BEGIN MODIFICATION: added collapsed and cross section textures
             ensureCollapsedTexture();
+            ensureCrossSectionTexture();
         }
         ViewCompat.postInvalidateOnAnimation(mView);
         // END MODIFICATION
     }
 
-    // BEGIN MODIFICATION: new setTextBlend method
-    private void setTextBlend(float blend) {
-        mTextBlend = blend;
+    // BEGIN MODIFICATION: new setCollapsedTextBlend and setExpandedTextBlend methods
+    private void setCollapsedTextBlend(float blend) {
+        mCollapsedTextBlend = blend;
+        ViewCompat.postInvalidateOnAnimation(mView);
+    }
+
+    private void setExpandedTextBlend(float blend) {
+        mExpandedTextBlend = blend;
         ViewCompat.postInvalidateOnAnimation(mView);
     }
     // END MODIFICATION
@@ -647,7 +659,7 @@ final class CollapsingTextHelper {
         }
     }
 
-    // BEGIN MODIFICATION: new ensureCollapsedTexture method
+    // BEGIN MODIFICATION: new ensureCollapsedTexture and ensureCrossSectionTexture methods
     private void ensureCollapsedTexture() {
         if (mCollapsedTitleTexture != null || mCollapsedBounds.isEmpty()
                 || TextUtils.isEmpty(mTextToDraw)) {
@@ -663,6 +675,28 @@ final class CollapsingTextHelper {
         Canvas c = new Canvas(mCollapsedTitleTexture);
         c.drawText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length(), 0,
                 -mTextPaint.ascent() / mScale, mTextPaint);
+        if (mTexturePaint == null) {
+            // Make sure we have a paint
+            mTexturePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        }
+    }
+
+    private void ensureCrossSectionTexture() {
+        if (mCrossSectionTitleTexture != null || mCollapsedBounds.isEmpty()
+                || TextUtils.isEmpty(mTextToDraw)) {
+            return;
+        }
+        calculateOffsets(0f);
+        final int w = Math.round(mTextPaint.measureText(mTextToDraw, mTextLayout.getLineStart(0),
+                mTextLayout.getLineEnd(0)));
+        final int h = Math.round(mTextPaint.descent() - mTextPaint.ascent());
+        if (w <= 0 && h <= 0) {
+            return; // If the width or height are 0, return
+        }
+        mCrossSectionTitleTexture = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(mCrossSectionTitleTexture);
+        c.drawText(mTextToDraw, mTextLayout.getLineStart(0),
+                mTextLayout.getLineEnd(0), 0, -mTextPaint.ascent() / mScale, mTextPaint);
         if (mTexturePaint == null) {
             // Make sure we have a paint
             mTexturePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
