@@ -47,3 +47,15 @@ You can find a simple demo application in the `demo` module.
 Most of the code is copied from the original Support Library classes, the only changes (apart from the package name, imports and automatic code reformatting) are in the `CollapsingTextHelper` class. The changes there are marked with comments.
 
 The current version 1.0.1 of the library is based on the code from the Design Support Library version 23.2.1.
+
+## Contributing
+
+This library is probably not complete and might contain bugs that only occur in constellations we did not
+yet test. Please do not hesitate to create an issue on GitHub for any problems that cross your way. Please
+understand that we cannot afford to spend time fixing problems that do not affect our products, but we'll
+be happy to merge pull requests if you or someone else is able to improve this library.
+
+If you get stuck anywhere in the process, please do not hestitate to ask us anytime at info@opacapp.de.
+
+Please note that we have a [Code of Conduct](https://github.com/opacapp/multiline-collapsingtoolbar/blob/master/CODE_OF_CONDUCT.md)
+in place that applies to all project-related communication.
