@@ -225,6 +225,11 @@ public class CollapsingToolbarLayout extends FrameLayout {
                         return setWindowInsets(insets);
                     }
                 });
+
+        // BEGIN MODIFICATION: set the value of maxNumberOfLines attribute to the mCollapsingTextHelper
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CollapsingToolbarLayoutExtension, defStyleAttr, 0);
+        mCollapsingTextHelper.setMaxNumberOfLines(typedArray.getInteger(R.styleable.CollapsingToolbarLayoutExtension_maxNumberOfLines, 3));
+        // END MODIFICATION
     }
 
     @Override

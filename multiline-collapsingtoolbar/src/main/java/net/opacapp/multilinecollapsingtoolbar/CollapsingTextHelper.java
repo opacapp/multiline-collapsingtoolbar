@@ -112,6 +112,7 @@ final class CollapsingTextHelper {
     private StaticLayout mTextLayout;
     private float mCollapsedTextBlend;
     private float mExpandedTextBlend;
+    private int maxNumberOfLines = 3;
     // END MODIFICATION
 
     public CollapsingTextHelper(View view) {
@@ -264,6 +265,12 @@ final class CollapsingTextHelper {
 
         recalculate();
     }
+
+    // BEGIN MODIFICATION: setter method for number of max lines
+    void setMaxNumberOfLines(int maxNumberOfLines) {
+        this.maxNumberOfLines = maxNumberOfLines;
+    }
+    // END MODIFICATION
 
     private Typeface readFontFamilyTypeface(int resId) {
         final TypedArray a = mView.getContext().obtainStyledAttributes(resId,
@@ -601,7 +608,7 @@ final class CollapsingTextHelper {
                 mScale = textSize / mExpandedTextSize;
             }
             // BEGIN MODIFICATION: Set maxLines variable
-            maxLines = 3;
+            maxLines = maxNumberOfLines;
             // END MODIFICATION
         }
         if (availableWidth > 0) {

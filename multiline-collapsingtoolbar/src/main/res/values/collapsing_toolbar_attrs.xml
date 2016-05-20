@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--BEGIN MODIFICATION: Create an attribute for max line number-->
+<resources>
+    <declare-styleable name="CollapsingToolbarLayoutExtension">
+        <attr name="maxNumberOfLines" format="integer" />
+    </declare-styleable>
+</resources>
+<!--END MODIFICATION-->
