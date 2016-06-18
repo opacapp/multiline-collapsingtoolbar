@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.opacapp.multilinecollapsingtoolbar;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.view.animation.Interpolator;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
 class ValueAnimatorCompatImplHoneycombMr1 extends ValueAnimatorCompat.Impl {
+
     final ValueAnimator mValueAnimator;
 
     ValueAnimatorCompatImplHoneycombMr1() {
@@ -96,7 +95,7 @@ class ValueAnimatorCompatImplHoneycombMr1 extends ValueAnimatorCompat.Impl {
     }
 
     @Override
-    public void setDuration(int duration) {
+    public void setDuration(long duration) {
         mValueAnimator.setDuration(duration);
     }
 

@@ -205,19 +205,19 @@ final class CollapsingTextHelper {
     }
 
     void setCollapsedTextAppearance(int resId) {
-        TypedArray a = mView.getContext().obtainStyledAttributes(resId, R.styleable.TextAppearance);
-        if (a.hasValue(R.styleable.TextAppearance_android_textColor)) {
+        TypedArray a = mView.getContext().obtainStyledAttributes(resId, android.support.v7.appcompat.R.styleable.TextAppearance);
+        if (a.hasValue(android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor)) {
             mCollapsedTextColor = a.getColor(
-                    R.styleable.TextAppearance_android_textColor, mCollapsedTextColor);
+                    android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor, mCollapsedTextColor);
         }
-        if (a.hasValue(R.styleable.TextAppearance_android_textSize)) {
+        if (a.hasValue(android.support.v7.appcompat.R.styleable.TextAppearance_android_textSize)) {
             mCollapsedTextSize = a.getDimensionPixelSize(
-                    R.styleable.TextAppearance_android_textSize, (int) mCollapsedTextSize);
+                    android.support.v7.appcompat.R.styleable.TextAppearance_android_textSize, (int) mCollapsedTextSize);
         }
-        mCollapsedShadowColor = a.getInt(R.styleable.TextAppearance_android_shadowColor, 0);
-        mCollapsedShadowDx = a.getFloat(R.styleable.TextAppearance_android_shadowDx, 0);
-        mCollapsedShadowDy = a.getFloat(R.styleable.TextAppearance_android_shadowDy, 0);
-        mCollapsedShadowRadius = a.getFloat(R.styleable.TextAppearance_android_shadowRadius, 0);
+        mCollapsedShadowColor = a.getInt(android.support.v7.appcompat.R.styleable.TextAppearance_android_shadowColor, 0);
+        mCollapsedShadowDx = a.getFloat(android.support.v7.appcompat.R.styleable.TextAppearance_android_shadowDx, 0);
+        mCollapsedShadowDy = a.getFloat(android.support.v7.appcompat.R.styleable.TextAppearance_android_shadowDy, 0);
+        mCollapsedShadowRadius = a.getFloat(android.support.v7.appcompat.R.styleable.TextAppearance_android_shadowRadius, 0);
         a.recycle();
 
         if (Build.VERSION.SDK_INT >= 16) {
@@ -228,19 +228,19 @@ final class CollapsingTextHelper {
     }
 
     void setExpandedTextAppearance(int resId) {
-        TypedArray a = mView.getContext().obtainStyledAttributes(resId, R.styleable.TextAppearance);
-        if (a.hasValue(R.styleable.TextAppearance_android_textColor)) {
+        TypedArray a = mView.getContext().obtainStyledAttributes(resId, android.support.v7.appcompat.R.styleable.TextAppearance);
+        if (a.hasValue(android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor)) {
             mExpandedTextColor = a.getColor(
-                    R.styleable.TextAppearance_android_textColor, mExpandedTextColor);
+                    android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor, mExpandedTextColor);
         }
-        if (a.hasValue(R.styleable.TextAppearance_android_textSize)) {
+        if (a.hasValue(android.support.v7.appcompat.R.styleable.TextAppearance_android_textSize)) {
             mExpandedTextSize = a.getDimensionPixelSize(
-                    R.styleable.TextAppearance_android_textSize, (int) mExpandedTextSize);
+                    android.support.v7.appcompat.R.styleable.TextAppearance_android_textSize, (int) mExpandedTextSize);
         }
-        mExpandedShadowColor = a.getInt(R.styleable.TextAppearance_android_shadowColor, 0);
-        mExpandedShadowDx = a.getFloat(R.styleable.TextAppearance_android_shadowDx, 0);
-        mExpandedShadowDy = a.getFloat(R.styleable.TextAppearance_android_shadowDy, 0);
-        mExpandedShadowRadius = a.getFloat(R.styleable.TextAppearance_android_shadowRadius, 0);
+        mExpandedShadowColor = a.getInt(android.support.v7.appcompat.R.styleable.TextAppearance_android_shadowColor, 0);
+        mExpandedShadowDx = a.getFloat(android.support.v7.appcompat.R.styleable.TextAppearance_android_shadowDx, 0);
+        mExpandedShadowDy = a.getFloat(android.support.v7.appcompat.R.styleable.TextAppearance_android_shadowDy, 0);
+        mExpandedShadowRadius = a.getFloat(android.support.v7.appcompat.R.styleable.TextAppearance_android_shadowRadius, 0);
         a.recycle();
 
         if (Build.VERSION.SDK_INT >= 16) {
@@ -333,7 +333,7 @@ final class CollapsingTextHelper {
                 fraction, mTextSizeInterpolator));
 
         // BEGIN MODIFICATION: set text blending
-        setCollapsedTextBlend(1-lerp(0, 1, 1-fraction, AnimationUtils
+        setCollapsedTextBlend(1 - lerp(0, 1, 1 - fraction, AnimationUtils
                 .FAST_OUT_SLOW_IN_INTERPOLATOR));
         setExpandedTextBlend(lerp(1, 0, fraction, AnimationUtils
                 .FAST_OUT_SLOW_IN_INTERPOLATOR));
@@ -385,7 +385,7 @@ final class CollapsingTextHelper {
         }
         // END MODIFICATION
 
-        switch (collapsedAbsGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
+        switch (collapsedAbsGravity & GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK) {
             case Gravity.CENTER_HORIZONTAL:
                 mCollapsedDrawX = mCollapsedBounds.centerX() - (width / 2);
                 break;
@@ -424,7 +424,7 @@ final class CollapsingTextHelper {
         }
         // END MODIFICATION
 
-        switch (expandedAbsGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
+        switch (expandedAbsGravity & GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK) {
             case Gravity.CENTER_HORIZONTAL:
                 mExpandedDrawX = mExpandedBounds.centerX() - (width / 2);
                 break;
@@ -498,7 +498,7 @@ final class CollapsingTextHelper {
             } else {
                 canvas.translate(x, y);
                 // Expanded text
-                mTextPaint.setAlpha((int) ( mExpandedTextBlend * 255));
+                mTextPaint.setAlpha((int) (mExpandedTextBlend * 255));
                 mTextLayout.draw(canvas);
                 // Collapsed text
                 mTextPaint.setAlpha((int) (mCollapsedTextBlend * 255));
@@ -770,7 +770,7 @@ final class CollapsingTextHelper {
     }
 
     private static float lerp(float startValue, float endValue, float fraction,
-            Interpolator interpolator) {
+                              Interpolator interpolator) {
         if (interpolator != null) {
             fraction = interpolator.getInterpolation(fraction);
         }

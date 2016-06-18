@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.opacapp.multilinecollapsingtoolbar;
 
-import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
-import android.view.ViewParent;
 
 /**
- * Utility helper for moving a {@link android.view.View} around using {@link
- * android.view.View#offsetLeftAndRight(int)} and {@link android.view.View#offsetTopAndBottom(int)}.
- * <p/>
- * Also the setting of absolute offsets (similar to translationX/Y), rather than additive offsets.
+ * Utility helper for moving a {@link android.view.View} around using
+ * {@link android.view.View#offsetLeftAndRight(int)} and
+ * {@link android.view.View#offsetTopAndBottom(int)}.
+ * <p>
+ * Also the setting of absolute offsets (similar to translationX/Y), rather than additive
+ * offsets.
  */
 class ViewOffsetHelper {
+
     private final View mView;
+
     private int mLayoutTop;
     private int mLayoutLeft;
     private int mOffsetTop;
@@ -41,6 +44,7 @@ class ViewOffsetHelper {
         // Now grab the intended top
         mLayoutTop = mView.getTop();
         mLayoutLeft = mView.getLeft();
+
         // And offset it as needed
         updateOffsets();
     }
@@ -48,20 +52,6 @@ class ViewOffsetHelper {
     private void updateOffsets() {
         ViewCompat.offsetTopAndBottom(mView, mOffsetTop - (mView.getTop() - mLayoutTop));
         ViewCompat.offsetLeftAndRight(mView, mOffsetLeft - (mView.getLeft() - mLayoutLeft));
-        // Manually invalidate the view and parent to make sure we get drawn pre-M
-        if (Build.VERSION.SDK_INT < 23) {
-            tickleInvalidationFlag(mView);
-            final ViewParent vp = mView.getParent();
-            if (vp instanceof View) {
-                tickleInvalidationFlag((View) vp);
-            }
-        }
-    }
-
-    private static void tickleInvalidationFlag(View view) {
-        final float y = ViewCompat.getTranslationY(view);
-        ViewCompat.setTranslationY(view, y + 1);
-        ViewCompat.setTranslationY(view, y);
     }
 
     /**
