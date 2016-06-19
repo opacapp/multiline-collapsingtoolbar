@@ -144,9 +144,11 @@ public class CollapsingToolbarLayout extends FrameLayout {
         mCollapsingTextHelper = new CollapsingTextHelper(this);
         mCollapsingTextHelper.setTextSizeInterpolator(AnimationUtils.DECELERATE_INTERPOLATOR);
 
+        // BEGIN MODIFICATION: use own default style
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.CollapsingToolbarLayout, defStyleAttr,
-                R.style.Widget_Design_CollapsingToolbar);
+                net.opacapp.multilinecollapsingtoolbar.R.style.Widget_Design_MultilineCollapsingToolbar);
+        // END MODIFICATION
 
         mCollapsingTextHelper.setExpandedTextGravity(
                 a.getInt(R.styleable.CollapsingToolbarLayout_expandedTitleGravity,
@@ -182,8 +184,10 @@ public class CollapsingToolbarLayout extends FrameLayout {
         // First load the default text appearances
         mCollapsingTextHelper.setExpandedTextAppearance(
                 R.style.TextAppearance_Design_CollapsingToolbar_Expanded);
+        // BEGIN MODIFICATION: use own default style
         mCollapsingTextHelper.setCollapsedTextAppearance(
-                android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Widget_ActionBar_Title);
+                net.opacapp.multilinecollapsingtoolbar.R.style.ActionBar_Title);
+        // END MODIFICATION
 
         // Now overlay any custom text appearances
         if (a.hasValue(R.styleable.CollapsingToolbarLayout_expandedTitleTextAppearance)) {

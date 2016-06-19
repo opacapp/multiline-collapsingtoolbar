@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.Design.MultilineCollapsingToolbar"
+        parent="@style/Widget.Design.CollapsingToolbar"/>
+    <style name="ActionBar.Title" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+</resources>
