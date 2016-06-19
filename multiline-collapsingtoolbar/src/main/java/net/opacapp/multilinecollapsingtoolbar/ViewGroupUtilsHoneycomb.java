@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.opacapp.multilinecollapsingtoolbar;
 
 import android.graphics.Matrix;
@@ -35,7 +36,9 @@ class ViewGroupUtilsHoneycomb {
         } else {
             m.set(IDENTITY);
         }
+
         offsetDescendantMatrix(group, child, m);
+
         RectF rectF = sRectF.get();
         if (rectF == null) {
             rectF = new RectF();
@@ -53,7 +56,9 @@ class ViewGroupUtilsHoneycomb {
             offsetDescendantMatrix(target, vp, m);
             m.preTranslate(-vp.getScrollX(), -vp.getScrollY());
         }
+
         m.preTranslate(view.getLeft(), view.getTop());
+
         if (!view.getMatrix().isIdentity()) {
             m.preConcat(view.getMatrix());
         }
