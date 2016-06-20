@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 7
         targetSdkVersion 23
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.1.0"
     }
     buildTypes {
         release {
@@ -34,7 +34,7 @@ ext {
     siteUrl = 'https://github.com/opacapp/multiline-collapsingtoolbar'
     gitUrl = 'https://github.com/opacapp/multiline-collapsingtoolbar.git'
 
-    libraryVersion = '1.0.1'
+    libraryVersion = '1.1.0'
 
     developerId = 'opacapp'
     developerName = 'Web Opac App'
