@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.opacapp.multilinecollapsingtoolbar;
 
 import android.view.animation.Interpolator;
 
 /**
  * This class offers a very small subset of {@code ValueAnimator}'s API, but works pre-v11 too.
- * <p/>
+ * <p>
  * You shouldn't not instantiate this directly. Instead use {@code ViewUtils.createAnimator()}.
  */
 class ValueAnimatorCompat {
+
     interface AnimatorUpdateListener {
         /**
          * <p>Notifies the occurrence of another frame of the animation.</p>
@@ -33,8 +35,9 @@ class ValueAnimatorCompat {
     }
 
     /**
-     * An animation listener receives notifications from an animation. Notifications indicate
-     * animation related events, such as the end or the repetition of the animation.
+     * An animation listener receives notifications from an animation.
+     * Notifications indicate animation related events, such as the end or the
+     * repetition of the animation.
      */
     interface AnimatorListener {
         /**
@@ -43,18 +46,16 @@ class ValueAnimatorCompat {
          * @param animator The started animation.
          */
         void onAnimationStart(ValueAnimatorCompat animator);
-
         /**
-         * <p>Notifies the end of the animation. This callback is not invoked for animations with
-         * repeat count set to INFINITE.</p>
+         * <p>Notifies the end of the animation. This callback is not invoked
+         * for animations with repeat count set to INFINITE.</p>
          *
          * @param animator The animation which reached its end.
          */
         void onAnimationEnd(ValueAnimatorCompat animator);
-
         /**
-         * <p>Notifies the cancellation of the animation. This callback is not invoked for
-         * animations with repeat count set to INFINITE.</p>
+         * <p>Notifies the cancellation of the animation. This callback is not invoked
+         * for animations with repeat count set to INFINITE.</p>
          *
          * @param animator The animation which was canceled.
          */
@@ -86,38 +87,23 @@ class ValueAnimatorCompat {
 
         interface AnimatorListenerProxy {
             void onAnimationStart();
-
             void onAnimationEnd();
-
             void onAnimationCancel();
         }
 
         abstract void start();
-
         abstract boolean isRunning();
-
         abstract void setInterpolator(Interpolator interpolator);
-
         abstract void setListener(AnimatorListenerProxy listener);
-
         abstract void setUpdateListener(AnimatorUpdateListenerProxy updateListener);
-
         abstract void setIntValues(int from, int to);
-
         abstract int getAnimatedIntValue();
-
         abstract void setFloatValues(float from, float to);
-
         abstract float getAnimatedFloatValue();
-
-        abstract void setDuration(int duration);
-
+        abstract void setDuration(long duration);
         abstract void cancel();
-
         abstract float getAnimatedFraction();
-
         abstract void end();
-
         abstract long getDuration();
     }
 
@@ -191,7 +177,7 @@ class ValueAnimatorCompat {
         return mImpl.getAnimatedFloatValue();
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(long duration) {
         mImpl.setDuration(duration);
     }
 

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.opacapp.multilinecollapsingtoolbar;
 
 import android.os.Handler;
@@ -25,17 +26,23 @@ import android.view.animation.Interpolator;
  * A 'fake' ValueAnimator implementation which uses a Runnable.
  */
 class ValueAnimatorCompatImplEclairMr1 extends ValueAnimatorCompat.Impl {
+
     private static final int HANDLER_DELAY = 10;
     private static final int DEFAULT_DURATION = 200;
+
     private static final Handler sHandler = new Handler(Looper.getMainLooper());
+
     private long mStartTime;
     private boolean mIsRunning;
+
     private final int[] mIntValues = new int[2];
     private final float[] mFloatValues = new float[2];
-    private int mDuration = DEFAULT_DURATION;
+
+    private long mDuration = DEFAULT_DURATION;
     private Interpolator mInterpolator;
     private AnimatorListenerProxy mListener;
     private AnimatorUpdateListenerProxy mUpdateListener;
+
     private float mAnimatedFraction;
 
     @Override
@@ -44,14 +51,21 @@ class ValueAnimatorCompatImplEclairMr1 extends ValueAnimatorCompat.Impl {
             // If we're already running, ignore
             return;
         }
+
         if (mInterpolator == null) {
             mInterpolator = new AccelerateDecelerateInterpolator();
         }
+
         mStartTime = SystemClock.uptimeMillis();
         mIsRunning = true;
+
+        // Reset the animated fraction
+        mAnimatedFraction = 0f;
+
         if (mListener != null) {
             mListener.onAnimationStart();
         }
+
         sHandler.postDelayed(mRunnable, HANDLER_DELAY);
     }
 
@@ -98,7 +112,7 @@ class ValueAnimatorCompatImplEclairMr1 extends ValueAnimatorCompat.Impl {
     }
 
     @Override
-    public void setDuration(int duration) {
+    public void setDuration(long duration) {
         mDuration = duration;
     }
 
@@ -106,8 +120,10 @@ class ValueAnimatorCompatImplEclairMr1 extends ValueAnimatorCompat.Impl {
     public void cancel() {
         mIsRunning = false;
         sHandler.removeCallbacks(mRunnable);
+
         if (mListener != null) {
             mListener.onAnimationCancel();
+            mListener.onAnimationEnd();
         }
     }
 
@@ -121,11 +137,14 @@ class ValueAnimatorCompatImplEclairMr1 extends ValueAnimatorCompat.Impl {
         if (mIsRunning) {
             mIsRunning = false;
             sHandler.removeCallbacks(mRunnable);
+
             // Set our animated fraction to 1
             mAnimatedFraction = 1f;
+
             if (mUpdateListener != null) {
                 mUpdateListener.onAnimationUpdate();
             }
+
             if (mListener != null) {
                 mListener.onAnimationEnd();
             }
@@ -141,22 +160,26 @@ class ValueAnimatorCompatImplEclairMr1 extends ValueAnimatorCompat.Impl {
         if (mIsRunning) {
             // Update the animated fraction
             final long elapsed = SystemClock.uptimeMillis() - mStartTime;
-            final float linearFraction = elapsed / (float) mDuration;
+            final float linearFraction = MathUtils.constrain(elapsed / (float) mDuration, 0f, 1f);
             mAnimatedFraction = mInterpolator != null
                     ? mInterpolator.getInterpolation(linearFraction)
                     : linearFraction;
+
             // If we're running, dispatch tp the listener
             if (mUpdateListener != null) {
                 mUpdateListener.onAnimationUpdate();
             }
+
             // Check to see if we've passed the animation duration
             if (SystemClock.uptimeMillis() >= (mStartTime + mDuration)) {
                 mIsRunning = false;
+
                 if (mListener != null) {
                     mListener.onAnimationEnd();
                 }
             }
         }
+
         if (mIsRunning) {
             // If we're still running, post another delayed runnable
             sHandler.postDelayed(mRunnable, HANDLER_DELAY);
