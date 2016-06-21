@@ -266,9 +266,13 @@ final class CollapsingTextHelper {
         recalculate();
     }
 
-    // BEGIN MODIFICATION: setter method for number of max lines
+    // BEGIN MODIFICATION: getter and setter method for number of max lines
     void setMaxLines(int maxLines) {
-        this.maxLines = maxLines;
+        if (maxLines != this.maxLines) {
+            this.maxLines = maxLines;
+            clearTexture();
+            recalculate();
+        }
     }
 
     int getMaxLines() {
