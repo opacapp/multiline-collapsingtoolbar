@@ -754,6 +754,16 @@ final class CollapsingTextHelper {
             mExpandedTitleTexture.recycle();
             mExpandedTitleTexture = null;
         }
+        // BEGIN MODIFICATION: clear other textures
+        if (mCollapsedTitleTexture != null) {
+            mCollapsedTitleTexture.recycle();
+            mCollapsedTitleTexture = null;
+        }
+        if (mCrossSectionTitleTexture != null) {
+            mCrossSectionTitleTexture.recycle();
+            mCrossSectionTitleTexture = null;
+        }
+        // END MODIFICATION
     }
 
     /**
