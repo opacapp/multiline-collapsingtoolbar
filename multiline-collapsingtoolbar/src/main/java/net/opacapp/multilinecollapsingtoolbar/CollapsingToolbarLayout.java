@@ -227,10 +227,26 @@ public class CollapsingToolbarLayout extends FrameLayout {
                 });
 
         // BEGIN MODIFICATION: set the value of maxNumberOfLines attribute to the mCollapsingTextHelper
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CollapsingToolbarLayoutExtension, defStyleAttr, 0);
-        mCollapsingTextHelper.setMaxNumberOfLines(typedArray.getInteger(R.styleable.CollapsingToolbarLayoutExtension_maxNumberOfLines, 3));
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension, defStyleAttr, 0);
+        mCollapsingTextHelper.setMaxLines(typedArray.getInteger(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_maxLines, 3));
         // END MODIFICATION
     }
+
+    // BEGIN MODIFICATION: add setMaxLines and getMaxLines
+    /**
+     * Sets the maximum number of lines to display in the expanded state
+     */
+    public void setMaxLines(int maxLines) {
+        mCollapsingTextHelper.setMaxLines(maxLines);
+    }
+
+    /**
+     * Gets the maximum number of lines to display in the expanded state
+     */
+    public int getMaxLines() {
+        return mCollapsingTextHelper.getMaxLines();
+    }
+    // END MODIFICATION
 
     @Override
     protected void onAttachedToWindow() {

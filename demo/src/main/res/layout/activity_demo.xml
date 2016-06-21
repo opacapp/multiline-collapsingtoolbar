@@ -21,7 +21,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:title="@string/title"
             app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"
-            app:maxNumberOfLines="3">
+            app:maxLines="3">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

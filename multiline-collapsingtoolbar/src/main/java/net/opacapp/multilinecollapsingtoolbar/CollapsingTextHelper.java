@@ -112,7 +112,7 @@ final class CollapsingTextHelper {
     private StaticLayout mTextLayout;
     private float mCollapsedTextBlend;
     private float mExpandedTextBlend;
-    private int maxNumberOfLines = 3;
+    private int maxLines = 3;
     // END MODIFICATION
 
     public CollapsingTextHelper(View view) {
@@ -267,8 +267,12 @@ final class CollapsingTextHelper {
     }
 
     // BEGIN MODIFICATION: setter method for number of max lines
-    void setMaxNumberOfLines(int maxNumberOfLines) {
-        this.maxNumberOfLines = maxNumberOfLines;
+    void setMaxLines(int maxLines) {
+        this.maxLines = maxLines;
+    }
+
+    int getMaxLines() {
+        return maxLines;
     }
     // END MODIFICATION
 
@@ -608,7 +612,7 @@ final class CollapsingTextHelper {
                 mScale = textSize / mExpandedTextSize;
             }
             // BEGIN MODIFICATION: Set maxLines variable
-            maxLines = maxNumberOfLines;
+            maxLines = this.maxLines;
             // END MODIFICATION
         }
         if (availableWidth > 0) {
