@@ -17,6 +17,7 @@
         <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:theme="@style/AppTheme.AppBarOverlay"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:title="@string/title"
             app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle">
