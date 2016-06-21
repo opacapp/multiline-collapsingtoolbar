@@ -9,7 +9,7 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="192dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:background="?attr/colorPrimary"
         android:fitsSystemWindows="true">
@@ -21,7 +21,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:title="@string/title"
             app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"
-            app:maxNumberOfLines="5">
+            app:maxNumberOfLines="3">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
