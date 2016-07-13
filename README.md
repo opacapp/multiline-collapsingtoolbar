@@ -65,3 +65,4 @@ in place that applies to all project-related communication.
 - [@johan12345](https://github.com/johan12345)
 - [@raphaelm](https://github.com/raphaelm)
 - [@jsotuyod](https://github.com/jsotuyod)
+- [@zsolt-szecsi](https://github.com/zsolt-szecsi)
