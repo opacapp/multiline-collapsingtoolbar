@@ -112,6 +112,7 @@ final class CollapsingTextHelper {
     private StaticLayout mTextLayout;
     private float mCollapsedTextBlend;
     private float mExpandedTextBlend;
+    private float mExpandedFirstLineDrawX;
     private int maxLines = 3;
     // END MODIFICATION
 
@@ -392,9 +393,10 @@ final class CollapsingTextHelper {
         // We then calculate the collapsed text size, using the same logic
         calculateUsingTextSize(mCollapsedTextSize);
 
-        // BEGIN MODIFICATION: set mTextToDrawCollapsed and calculate width using mTextLayout
+        // BEGIN MODIFICATION: set mTextToDrawCollapsed and calculate width using it
         mTextToDrawCollapsed = mTextToDraw;
-        float width = mTextLayout != null ? mTextLayout.getWidth() : 0;
+        float width = mTextToDrawCollapsed != null ?
+            mTextPaint.measureText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length()) : 0;
         // END MODIFICATION
 
         final int collapsedAbsGravity = GravityCompat.getAbsoluteGravity(mCollapsedTextGravity,
@@ -433,8 +435,9 @@ final class CollapsingTextHelper {
 
         calculateUsingTextSize(mExpandedTextSize);
 
-        // BEGIN MODIFICATION: calculate width using mTextLayout
-        width = mTextLayout != null ? mTextLayout.getWidth() : 0;
+        // BEGIN MODIFICATION: calculate width using mTextLayout based on first line and store that padding
+        width = mTextLayout != null ? mTextLayout.getLineWidth(0) : 0;
+        mExpandedFirstLineDrawX = mTextLayout != null ? mTextLayout.getLineLeft(0) : 0;
         // END MODIFICATION
 
         final int expandedAbsGravity = GravityCompat.getAbsoluteGravity(mExpandedTextGravity,
@@ -517,11 +520,14 @@ final class CollapsingTextHelper {
             if (mScale != 1f) {
                 canvas.scale(mScale, mScale, x, y);
             }
+
+            // Compute where to draw mTextLayout for this frame
+            final float currentExpandedX = mCurrentDrawX + mTextLayout.getLineLeft(0) - mExpandedFirstLineDrawX * 2;
             if (drawTexture) {
                 // If we should use a texture, draw it instead of text
                 // Expanded text
                 mTexturePaint.setAlpha((int) (mExpandedTextBlend * 255));
-                canvas.drawBitmap(mExpandedTitleTexture, x, y, mTexturePaint);
+                canvas.drawBitmap(mExpandedTitleTexture, currentExpandedX, y, mTexturePaint);
                 // Collapsed text
                 mTexturePaint.setAlpha((int) (mCollapsedTextBlend * 255));
                 canvas.drawBitmap(mCollapsedTitleTexture, x, y, mTexturePaint);
@@ -529,10 +535,15 @@ final class CollapsingTextHelper {
                 mTexturePaint.setAlpha(255);
                 canvas.drawBitmap(mCrossSectionTitleTexture, x, y, mTexturePaint);
             } else {
-                canvas.translate(x, y);
+                // positon expanded text appropriately
+                canvas.translate(currentExpandedX, y);
                 // Expanded text
                 mTextPaint.setAlpha((int) (mExpandedTextBlend * 255));
                 mTextLayout.draw(canvas);
+
+                // position the overlays
+                canvas.translate(x - currentExpandedX, 0);
+
                 // Collapsed text
                 mTextPaint.setAlpha((int) (mCollapsedTextBlend * 255));
                 canvas.drawText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length(), 0,
@@ -658,8 +669,27 @@ final class CollapsingTextHelper {
                 mTextToDraw = truncatedText;
                 mIsRtl = calculateIsRtl(mTextToDraw);
             }
+
+            final Layout.Alignment alignment;
+
+            // Don't rectify gravity for RTL languages, Layout.Alignment does it already.
+            switch (mExpandedTextGravity & GravityCompat.RELATIVE_HORIZONTAL_GRAVITY_MASK) {
+                case Gravity.CENTER_HORIZONTAL:
+                    alignment = Layout.Alignment.ALIGN_CENTER;
+                    break;
+                case Gravity.RIGHT:
+                case Gravity.END:
+                    alignment = Layout.Alignment.ALIGN_OPPOSITE;
+                    break;
+                case Gravity.LEFT:
+                case Gravity.START:
+                default:
+                    alignment = Layout.Alignment.ALIGN_NORMAL;
+                    break;
+            }
+
             mTextLayout = new StaticLayout(mTextToDraw, mTextPaint, (int) availableWidth,
-                    Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+                alignment, 1, 0, false);
             // END MODIFICATION
         }
     }
