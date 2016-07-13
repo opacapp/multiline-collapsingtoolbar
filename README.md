@@ -60,3 +60,8 @@ If you get stuck anywhere in the process, please do not hestitate to ask us anyt
 
 Please note that we have a [Code of Conduct](https://github.com/opacapp/multiline-collapsingtoolbar/blob/master/CODE_OF_CONDUCT.md)
 in place that applies to all project-related communication.
+
+## Contributors
+- [@johan12345](https://github.com/johan12345)
+- [@raphaelm](https://github.com/raphaelm)
+- [@jsotuyod](https://github.com/jsotuyod)
