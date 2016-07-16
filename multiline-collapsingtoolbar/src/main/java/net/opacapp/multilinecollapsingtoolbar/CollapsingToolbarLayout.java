@@ -139,7 +139,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
     public CollapsingToolbarLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        ThemeUtils.checkAppCompatTheme(context);
+        //ThemeUtils.checkAppCompatTheme(context);
 
         mCollapsingTextHelper = new CollapsingTextHelper(this);
         mCollapsingTextHelper.setTextSizeInterpolator(AnimationUtils.DECELERATE_INTERPOLATOR);
