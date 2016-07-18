@@ -10,24 +10,28 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="192dp"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:background="?attr/colorPrimary"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
         <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:theme="@style/AppTheme.AppBarOverlay"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Headline"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginEnd="16dp"
+            app:expandedTitleMarginStart="16dp"
+            app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="@string/title"
-            app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"
-            app:maxLines="3">
+            app:title="@string/title">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:layout_collapseMode="pin"/>
 
         </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
