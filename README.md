@@ -2,11 +2,9 @@
 _multiline-collapsingtoolbar_ is a replacement for `CollapsingToolbarLayout` from the [Android Design Support Library](https://github.com/android/platform_frameworks_support/tree/master/design) which can deal with multiline titles (currently hard-coded to a maximum of 3 lines) in the expanded state. When collapsing the toolbar, the lower lines of the title fade away to leave only the top line visible.
 
 ## Example
-Here you can see the library in use in the [Web Opac App](https://github.com/opacapp/opacclient):
+Here you can see the library in action in the included demo app:
 
-![Demo image](https://drop.rami.io/0DyEN/)
-
-Background Image credit: [_Tom Murphy VII_ on Wikimedia Commons, CC-BY-SA 3.0](https://commons.wikimedia.org/wiki/File:Old_book_bindings.jpg)
+![Demo image](https://raw.githubusercontent.com/opacapp/multiline-collapsingtoolbar/master/demo.gif)
 
 ## Installation
 
