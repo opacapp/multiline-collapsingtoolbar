@@ -13,7 +13,7 @@ adding a new dependency statement.
 
 ```gradle
 dependencies {
-    compile 'net.opacapp:multiline-collapsingtoolbar:1.2.1'
+    compile 'net.opacapp:multiline-collapsingtoolbar:1.2.2'
 }
 ```
 
@@ -45,7 +45,7 @@ You can find a simple demo application in the `demo` module.
 ## Implementation details
 Most of the code is copied from the original Support Library classes, the only changes (apart from the package name, imports and automatic code reformatting) are in the `CollapsingTextHelper` and `CollapsingToolbarLayout` classes. The changes there are marked with comments.
 
-The current version 1.2.1 of the library is based on the code from the Design Support Library version 24.0.0.
+The current version 1.2.2 of the library is based on the code from the **Design Support Library version 24.1.1**.
 
 ## Contributing
 
