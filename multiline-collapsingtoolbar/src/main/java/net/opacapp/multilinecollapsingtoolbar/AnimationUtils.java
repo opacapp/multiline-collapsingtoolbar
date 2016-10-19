@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.opacapp.multilinecollapsingtoolbar;
 
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
@@ -24,6 +25,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 class AnimationUtils {
+
     static final Interpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
     static final Interpolator FAST_OUT_SLOW_IN_INTERPOLATOR = new FastOutSlowInInterpolator();
     static final Interpolator FAST_OUT_LINEAR_IN_INTERPOLATOR = new FastOutLinearInInterpolator();
@@ -54,4 +56,5 @@ class AnimationUtils {
         public void onAnimationRepeat(Animation animation) {
         }
     }
+
 }

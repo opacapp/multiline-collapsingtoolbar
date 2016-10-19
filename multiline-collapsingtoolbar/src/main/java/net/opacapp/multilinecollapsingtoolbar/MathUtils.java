@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.opacapp.multilinecollapsingtoolbar;
 
 class MathUtils {
+
     static int constrain(int amount, int low, int high) {
         return amount < low ? low : (amount > high ? high : amount);
     }
@@ -23,4 +25,5 @@ class MathUtils {
     static float constrain(float amount, float low, float high) {
         return amount < low ? low : (amount > high ? high : amount);
     }
+
 }

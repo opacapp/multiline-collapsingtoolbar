@@ -16,17 +16,19 @@
 
 package net.opacapp.multilinecollapsingtoolbar;
 
+import android.annotation.TargetApi;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 class ViewGroupUtilsHoneycomb {
     private static final ThreadLocal<Matrix> sMatrix = new ThreadLocal<>();
     private static final ThreadLocal<RectF> sRectF = new ThreadLocal<>();
-    private static final Matrix IDENTITY = new Matrix();
 
     public static void offsetDescendantRect(ViewGroup group, View child, Rect rect) {
         Matrix m = sMatrix.get();
@@ -34,7 +36,7 @@ class ViewGroupUtilsHoneycomb {
             m = new Matrix();
             sMatrix.set(m);
         } else {
-            m.set(IDENTITY);
+            m.reset();
         }
 
         offsetDescendantMatrix(group, child, m);
@@ -42,6 +44,7 @@ class ViewGroupUtilsHoneycomb {
         RectF rectF = sRectF.get();
         if (rectF == null) {
             rectF = new RectF();
+            sRectF.set(rectF);
         }
         rectF.set(rect);
         m.mapRect(rectF);
