@@ -20,9 +20,13 @@ adding a new dependency statement.
 
 ```gradle
 dependencies {
-    compile 'net.opacapp:multiline-collapsingtoolbar:1.2.2'
+    compile 'net.opacapp:multiline-collapsingtoolbar:1.3.0'
 }
 ```
+
+The current version 1.3.0 of the library is based on the code and tested with the **Design Support Library version 25.0.0**.
+We'll try to keep up to date with new support library versions as soon as possible, but please **do not expect this
+library to run with support versions other than that.**
 
 ## Usage
 The library's public API is nearly identical to the version from the support library, so you can use it as a drop-in replacement. We only added a `maxLines` attribute and corresponding getter and setter functions to the `CollapsingToolbarLayout` to make it possible to change the maximum number of lines, which is set to 3 by default.
@@ -51,8 +55,6 @@ You can find a simple demo application in the `demo` module.
 
 ## Implementation details
 Most of the code is copied from the original Support Library classes, the only changes (apart from the package name, imports and automatic code reformatting) are in the `CollapsingTextHelper` and `CollapsingToolbarLayout` classes. The changes there are marked with comments.
-
-The current version 1.2.2 of the library is based on the code from the **Design Support Library version 24.1.1**.
 
 ## Contributing
 
