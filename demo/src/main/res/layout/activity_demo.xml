@@ -10,25 +10,46 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="192dp"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        android:theme="@style/AppTheme.AppBarOverlay.Dark"
         android:background="?attr/colorPrimary"
         android:fitsSystemWindows="true">
 
         <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingtoolbarlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:theme="@style/AppTheme.AppBarOverlay"
+            android:theme="@style/AppTheme.AppBarOverlay.Dark"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:title="@string/title"
             app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"
+            app:contentScrim="#ffffff"
+            app:statusBarScrim="#c0c0c0"
             app:maxLines="3">
 
+            <!-- Dummy ImageView to enable content scrim -->
+            <ImageView
+                android:layout_width="match_parent" app:layout_collapseMode="parallax"
+                android:layout_height="match_parent" />
+
+            <!-- This toolbar is only visible when collapsed -->
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/toolbar_light"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:layout_collapseMode="pin"/>
+                app:popupTheme="@style/AppTheme.PopupOverlay.Light"
+                app:theme="@style/AppTheme.AppBarOverlay.Light"
+                app:layout_collapseMode="pin"
+                app:layout_scrimMode="in"/>
+
+            <!-- This toolbar is only visible when expanded -->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_dark"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay.Dark"
+                app:theme="@style/AppTheme.AppBarOverlay.Dark"
+                app:layout_collapseMode="pin"
+                app:layout_scrimMode="out"/>
 
         </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 
