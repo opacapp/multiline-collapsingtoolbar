@@ -650,6 +650,14 @@ public class CollapsingToolbarLayout extends FrameLayout {
             if (contentScrim != null && mToolbar != null) {
                 ViewCompat.postInvalidateOnAnimation(mToolbar);
             }
+            // BEGIN MODIFICATION by dmfs: update scrimmed state on AppBarLayout
+            ViewParent parent = getParent();
+            if (parent instanceof net.opacapp.appbarlayout.AppBarLayout)
+            {
+                // for now we assume the content is scrimmed if scrim alpha > 50%
+                ((net.opacapp.appbarlayout.AppBarLayout) parent).setScrimmed(alpha>127);
+            }
+            // END MODIFICATION by dmfs
             mScrimAlpha = alpha;
             ViewCompat.postInvalidateOnAnimation(CollapsingToolbarLayout.this);
         }
