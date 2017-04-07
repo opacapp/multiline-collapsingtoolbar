@@ -119,6 +119,7 @@ final class CollapsingTextHelper {
     private float mExpandedTextBlend;
     private float mExpandedFirstLineDrawX;
     private int maxLines = 3;
+    private float mBlendRatio;
     // END MODIFICATION
 
     public CollapsingTextHelper(View view) {
@@ -341,6 +342,25 @@ final class CollapsingTextHelper {
         }
     }
 
+    // BEGIN MODIFICATION by dmfs: setter method for blend ratio
+    /**
+     * Set the value indicating the current scroll value. This decides how much of the
+     * background will be displayed, as well as the title metrics/positioning.
+     *
+     * A value of {@code 0.0} indicates that the expanded title is fully opaque.
+     * A value of {@code 1.0} indicates that the collapsed title is fully opaque.
+     */
+    void setBlendRatio(float ratio) {
+        ratio = MathUtils.constrain(ratio, 0f, 1f);
+
+        if (ratio != mBlendRatio) {
+            mBlendRatio = ratio;
+            calculateCurrentOffsets();
+        }
+    }
+    // END MODIFICATION by dmfs
+
+
     final boolean setState(final int[] state) {
         mState = state;
 
@@ -371,10 +391,10 @@ final class CollapsingTextHelper {
     }
 
     private void calculateCurrentOffsets() {
-        calculateOffsets(mExpandedFraction);
+        calculateOffsets(mExpandedFraction, mBlendRatio);
     }
 
-    private void calculateOffsets(final float fraction) {
+    private void calculateOffsets(final float fraction, final float blendRatio) {
         interpolateBounds(fraction);
         mCurrentDrawX = lerp(mExpandedDrawX, mCollapsedDrawX, fraction,
                 mPositionInterpolator);
@@ -384,18 +404,20 @@ final class CollapsingTextHelper {
         setInterpolatedTextSize(lerp(mExpandedTextSize, mCollapsedTextSize,
                 fraction, mTextSizeInterpolator));
 
-        // BEGIN MODIFICATION: set text blending
-        setCollapsedTextBlend(1 - lerp(0, 1, 1 - fraction, AnimationUtils
+        // BEGIN MODIFICATION: set text blending, using the blend ratio
+        setCollapsedTextBlend(1 - lerp(0, 1, 1 - blendRatio, AnimationUtils
                 .FAST_OUT_SLOW_IN_INTERPOLATOR));
-        setExpandedTextBlend(lerp(1, 0, fraction, AnimationUtils
+        setExpandedTextBlend(lerp(1, 0, blendRatio, AnimationUtils
                 .FAST_OUT_SLOW_IN_INTERPOLATOR));
         // END MODIFICATION
 
         if (mCollapsedTextColor != mExpandedTextColor) {
             // If the collapsed and expanded text colors are different, blend them based on the
             // fraction
+            // BEGIN MODIFICATION by dmfs: apply blend ratio
             mTextPaint.setColor(blendColors(
-                    getCurrentExpandedTextColor(), getCurrentCollapsedTextColor(), fraction));
+                    getCurrentExpandedTextColor(), getCurrentCollapsedTextColor(), blendRatio));
+            // END MODIFICATION by dmfs
         } else {
             mTextPaint.setColor(getCurrentCollapsedTextColor());
         }
@@ -756,7 +778,7 @@ final class CollapsingTextHelper {
                 || TextUtils.isEmpty(mTextToDraw)) {
             return;
         }
-        calculateOffsets(0f);
+        calculateOffsets(0f, 0f);
 
         // BEGIN MODIFICATION: Calculate width and height using mTextLayout and remove
         // mTextureAscent and mTextureDescent assignment
@@ -785,7 +807,7 @@ final class CollapsingTextHelper {
                 || TextUtils.isEmpty(mTextToDraw)) {
             return;
         }
-        calculateOffsets(0f);
+        calculateOffsets(0f, 0f);
         final int w = Math.round(mTextPaint.measureText(mTextToDraw, 0, mTextToDraw.length()));
         final int h = Math.round(mTextPaint.descent() - mTextPaint.ascent());
         if (w <= 0 && h <= 0) {
@@ -806,7 +828,7 @@ final class CollapsingTextHelper {
                 || TextUtils.isEmpty(mTextToDraw)) {
             return;
         }
-        calculateOffsets(0f);
+        calculateOffsets(0f, 0f);
         final int w = Math.round(mTextPaint.measureText(mTextToDraw, mTextLayout.getLineStart(0),
                 mTextLayout.getLineEnd(0)));
         final int h = Math.round(mTextPaint.descent() - mTextPaint.ascent());
