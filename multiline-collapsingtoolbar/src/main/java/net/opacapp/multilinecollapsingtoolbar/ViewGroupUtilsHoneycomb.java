@@ -21,11 +21,13 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+@RequiresApi(11)
+@TargetApi(11)
 class ViewGroupUtilsHoneycomb {
     private static final ThreadLocal<Matrix> sMatrix = new ThreadLocal<>();
     private static final ThreadLocal<RectF> sRectF = new ThreadLocal<>();

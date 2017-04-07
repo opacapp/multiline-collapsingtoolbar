@@ -16,6 +16,11 @@
 
 package net.opacapp.multilinecollapsingtoolbar;
 
+import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
+import static net.opacapp.multilinecollapsingtoolbar.MathUtils.constrain;
+import static net.opacapp.multilinecollapsingtoolbar.ViewUtils.objectEquals;
+
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -30,6 +35,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 import android.support.design.R;
@@ -50,10 +56,6 @@ import android.widget.FrameLayout;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import static android.support.annotation.RestrictTo.Scope.GROUP_ID;
-import static net.opacapp.multilinecollapsingtoolbar.MathUtils.constrain;
-import static net.opacapp.multilinecollapsingtoolbar.ViewUtils.objectEquals;
 
 /**
  * CollapsingToolbarLayout is a wrapper for {@link Toolbar} which implements a collapsing app bar.
@@ -109,7 +111,6 @@ public class CollapsingToolbarLayout extends FrameLayout {
     private Toolbar mToolbar;
     private View mToolbarDirectChild;
     private View mDummyView;
-    private int mToolbarDrawIndex;
 
     private int mExpandedMarginStart;
     private int mExpandedMarginTop;
@@ -338,16 +339,14 @@ public class CollapsingToolbarLayout extends FrameLayout {
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
         // This is a little weird. Our scrim needs to be behind the Toolbar (if it is present),
         // but in front of any other children which are behind it. To do this we intercept the
-        // drawChild() call, and draw our scrim after the preceding view is drawn
-        boolean invalidate = super.drawChild(canvas, child, drawingTime);
-
-        if (mContentScrim != null && mScrimAlpha > 0 && isToolbarChildDrawnNext(child)) {
+        // drawChild() call, and draw our scrim just before the Toolbar is drawn
+        boolean invalidated = false;
+        if (mContentScrim != null && mScrimAlpha > 0 && isToolbarChild(child)) {
             mContentScrim.mutate().setAlpha(mScrimAlpha);
             mContentScrim.draw(canvas);
-            invalidate = true;
+            invalidated = true;
         }
-
-        return invalidate;
+        return super.drawChild(canvas, child, drawingTime) || invalidated;
     }
 
     @Override
@@ -393,8 +392,10 @@ public class CollapsingToolbarLayout extends FrameLayout {
         mRefreshToolbar = false;
     }
 
-    private boolean isToolbarChildDrawnNext(View child) {
-        return mToolbarDrawIndex >= 0 && mToolbarDrawIndex == indexOfChild(child) + 1;
+    private boolean isToolbarChild(View child) {
+        return (mToolbarDirectChild == null || mToolbarDirectChild == this)
+                ? child == mToolbar
+                : child == mToolbarDirectChild;
     }
 
     /**
@@ -504,13 +505,9 @@ public class CollapsingToolbarLayout extends FrameLayout {
             }
             if (mToolbarDirectChild == null || mToolbarDirectChild == this) {
                 setMinimumHeight(getHeightWithMargins(mToolbar));
-                mToolbarDrawIndex = indexOfChild(mToolbar);
             } else {
                 setMinimumHeight(getHeightWithMargins(mToolbarDirectChild));
-                mToolbarDrawIndex = indexOfChild(mToolbarDirectChild);
             }
-        } else {
-            mToolbarDrawIndex = -1;
         }
 
         updateScrimVisibility();
@@ -653,6 +650,10 @@ public class CollapsingToolbarLayout extends FrameLayout {
             mScrimAlpha = alpha;
             ViewCompat.postInvalidateOnAnimation(CollapsingToolbarLayout.this);
         }
+    }
+
+    int getScrimAlpha() {
+        return mScrimAlpha;
     }
 
     /**
@@ -1150,7 +1151,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
         private static final float DEFAULT_PARALLAX_MULTIPLIER = 0.5f;
 
         /** @hide */
-        @RestrictTo(GROUP_ID)
+        @RestrictTo(LIBRARY_GROUP)
         @IntDef({
                 COLLAPSE_MODE_OFF,
                 COLLAPSE_MODE_PIN,
@@ -1209,7 +1210,10 @@ public class CollapsingToolbarLayout extends FrameLayout {
             super(source);
         }
 
+        @RequiresApi(19)
+        @TargetApi(19)
         public LayoutParams(FrameLayout.LayoutParams source) {
+            // The copy constructor called here only exists on API 19+.
             super(source);
         }
 

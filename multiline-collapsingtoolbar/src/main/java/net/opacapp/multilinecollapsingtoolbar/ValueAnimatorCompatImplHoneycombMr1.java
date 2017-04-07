@@ -21,9 +21,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.animation.Interpolator;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+@RequiresApi(12)
+@TargetApi(12)
 class ValueAnimatorCompatImplHoneycombMr1 extends ValueAnimatorCompat.Impl {
 
     private final ValueAnimator mValueAnimator;
