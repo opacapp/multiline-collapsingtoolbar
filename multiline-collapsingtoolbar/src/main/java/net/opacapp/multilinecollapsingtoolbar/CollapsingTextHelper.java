@@ -910,4 +910,8 @@ final class CollapsingTextHelper {
     private static boolean rectEquals(Rect r, int left, int top, int right, int bottom) {
         return !(r.left != left || r.top != top || r.right != right || r.bottom != bottom);
     }
+
+    CharSequence getTextToDraw() {
+        return mTextToDraw;
+    }
 }
