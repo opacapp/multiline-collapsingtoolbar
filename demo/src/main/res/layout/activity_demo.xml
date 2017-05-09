@@ -7,11 +7,12 @@
     android:fitsSystemWindows="true"
     tools:context="net.opacapp.multilinecollapsingtoolbar.demo.DemoActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <net.opacapp.appbarlayout.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="192dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:background="?attr/colorPrimary"
+        android:stateListAnimator="@animator/appbar_state_list_animator"
         android:fitsSystemWindows="true">
 
         <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
@@ -21,7 +22,12 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:title="@string/title"
             app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"
+            app:contentScrim="#ffffffff"
             app:maxLines="3">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -32,7 +38,7 @@
 
         </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 
-    </android.support.design.widget.AppBarLayout>
+    </net.opacapp.appbarlayout.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

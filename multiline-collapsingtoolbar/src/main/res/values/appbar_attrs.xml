@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--BEGIN MODIFICATION by dmfs: Create scrimmed state-->
+<resources>
+    <declare-styleable name="AppBarLayout_ExtStyle">
+        <attr name="state_scrimmed" format="boolean"/>
+    </declare-styleable>
+</resources>
+<!--END MODIFICATION by dmfs-->
