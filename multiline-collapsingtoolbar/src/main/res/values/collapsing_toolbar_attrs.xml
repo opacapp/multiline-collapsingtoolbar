@@ -4,5 +4,12 @@
     <declare-styleable name="CollapsingToolbarLayoutExtension">
         <attr name="maxLines" format="integer" />
     </declare-styleable>
+    <declare-styleable name="CollapsingToolbarScrimMode">
+        <attr name="layout_scrimMode" format="enum">
+            <enum name="none" value="0" />
+            <enum name="out" value="1" />
+            <enum name="in" value="2" />
+        </attr>
+    </declare-styleable>
 </resources>
 <!--END MODIFICATION-->
