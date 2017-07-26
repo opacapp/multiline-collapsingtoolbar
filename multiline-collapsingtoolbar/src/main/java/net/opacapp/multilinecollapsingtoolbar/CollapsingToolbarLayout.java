@@ -106,6 +106,12 @@ public class CollapsingToolbarLayout extends FrameLayout {
 
     private static final int DEFAULT_SCRIM_ANIMATION_DURATION = 600;
 
+    public static final int AUTO_ANIMATE_SCRIM = 1;
+    public static final int AUTO_ANIMATE_TITLE = 2;
+    public static final int AUTO_ANIMATE_CHILDREN = 4;
+    public static final int AUTO_ANIMATE_ALL = AUTO_ANIMATE_SCRIM | AUTO_ANIMATE_TITLE | AUTO_ANIMATE_CHILDREN;
+    public static final int AUTO_ANIMATE_DEFAULT = AUTO_ANIMATE_SCRIM;
+
     private boolean mRefreshToolbar = true;
     private int mToolbarId;
     private Toolbar mToolbar;
@@ -135,6 +141,8 @@ public class CollapsingToolbarLayout extends FrameLayout {
     int mCurrentOffset;
 
     WindowInsetsCompat mLastInsets;
+
+    private int mAutoAnimate = AUTO_ANIMATE_DEFAULT;
 
     public CollapsingToolbarLayout(Context context) {
         this(context, null);
@@ -237,6 +245,9 @@ public class CollapsingToolbarLayout extends FrameLayout {
         // BEGIN MODIFICATION: set the value of maxNumberOfLines attribute to the mCollapsingTextHelper
         TypedArray typedArray = context.obtainStyledAttributes(attrs, net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension, defStyleAttr, 0);
         mCollapsingTextHelper.setMaxLines(typedArray.getInteger(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_maxLines, 3));
+        // load auto animation setting
+        mAutoAnimate = typedArray.getInt(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_autoAnimate, AUTO_ANIMATE_DEFAULT);
+        typedArray.recycle();
         // END MODIFICATION
     }
 
@@ -630,7 +641,14 @@ public class CollapsingToolbarLayout extends FrameLayout {
             mScrimAnimator.addUpdateListener(new ValueAnimatorCompat.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimatorCompat animator) {
-                    setScrimAlpha(animator.getAnimatedIntValue());
+                    // BEGIN MODIFICATION by dmfs: apply scrim & blending automatically if configured that way
+                    if ((mAutoAnimate & AUTO_ANIMATE_SCRIM) != 0) {
+                        setScrimAlpha(animator.getAnimatedIntValue());
+                    }
+                    if ((mAutoAnimate & AUTO_ANIMATE_TITLE) != 0) {
+                        mCollapsingTextHelper.setBlendRatio(animator.getAnimatedIntValue()/255f);
+                    }
+                    // END MODIFICATION by dmfs
                 }
             });
         } else if (mScrimAnimator.isRunning()) {
@@ -1307,7 +1325,16 @@ public class CollapsingToolbarLayout extends FrameLayout {
                 }
             }
 
-            // Show or hide the scrims if needed
+            // BEGIN MODIFICATION by dmfs: apply scrim & blending gradually if configured that way
+            final float expandRatio =  Math.abs(verticalOffset) /
+                    (float) (getHeight() - ViewCompat.getMinimumHeight(CollapsingToolbarLayout.this) - insetTop);
+
+            if ((mAutoAnimate & AUTO_ANIMATE_SCRIM) == 0) {
+                // title blend it not auto-animated
+                setScrimAlpha((int) (expandRatio * 0xff));
+            }
+
+            // start animations if needed
             updateScrimVisibility();
 
             if (mStatusBarScrim != null && insetTop > 0) {
@@ -1315,10 +1342,13 @@ public class CollapsingToolbarLayout extends FrameLayout {
             }
 
             // Update the collapsing text's fraction
-            final int expandRange = getHeight() - ViewCompat.getMinimumHeight(
-                    CollapsingToolbarLayout.this) - insetTop;
-            mCollapsingTextHelper.setExpansionFraction(
-                    Math.abs(verticalOffset) / (float) expandRange);
+            mCollapsingTextHelper.setExpansionFraction(expandRatio);
+
+            if ((mAutoAnimate & AUTO_ANIMATE_TITLE) == 0) {
+                // title blend it not auto-animated
+                mCollapsingTextHelper.setBlendRatio(expandRatio);
+            }
+            // END MODIFICATION
         }
     }
 }

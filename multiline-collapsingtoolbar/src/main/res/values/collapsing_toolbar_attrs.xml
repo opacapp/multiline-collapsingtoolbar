@@ -3,6 +3,13 @@
 <resources>
     <declare-styleable name="CollapsingToolbarLayoutExtension">
         <attr name="maxLines" format="integer" />
+        <attr name="autoAnimate">
+            <flag name="none" value="0" />
+            <flag name="scrim" value="1" />
+            <flag name="title" value="2" />
+            <flag name="children" value="4" />
+            <flag name="all" value="7" />
+        </attr>
     </declare-styleable>
 </resources>
 <!--END MODIFICATION-->
