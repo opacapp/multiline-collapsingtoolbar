@@ -237,6 +237,9 @@ public class CollapsingToolbarLayout extends FrameLayout {
         // BEGIN MODIFICATION: set the value of maxNumberOfLines attribute to the mCollapsingTextHelper
         TypedArray typedArray = context.obtainStyledAttributes(attrs, net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension, defStyleAttr, 0);
         mCollapsingTextHelper.setMaxLines(typedArray.getInteger(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_maxLines, 3));
+        mCollapsingTextHelper.setLineSpacingExtra(typedArray.getFloat(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_lineSpacingExtra, 0));
+        mCollapsingTextHelper.setLineSpacingMultiplier(typedArray.getFloat(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_lineSpacingMultiplier, 1));
+        typedArray.recycle();
         // END MODIFICATION
     }
 
@@ -253,6 +256,39 @@ public class CollapsingToolbarLayout extends FrameLayout {
      */
     public int getMaxLines() {
         return mCollapsingTextHelper.getMaxLines();
+    }
+    // END MODIFICATION
+
+    // BEGIN MODIFICATION: add setLineSpacingExtra and getLineSpacingExtra
+    /**
+     * Set line spacing extra. The default is 0.0f
+     */
+    void setLineSpacingExtra(float lineSpacingExtra) {
+        mCollapsingTextHelper.setLineSpacingExtra(lineSpacingExtra);
+    }
+
+    /**
+     * Gets the line spacing extra applied to each line in the expanded state
+     */
+    float getLineSpacingExtra() {
+        return mCollapsingTextHelper.getLineSpacingExtra();
+    }
+    // END MODIFICATION
+
+    // BEGIN MODIFICATION: add setLineSpacingExtra and getLineSpacingExtra
+
+    /**
+     * Set line spacing multiplier. The default is 1.0f
+     */
+    void setLineSpacingMultiplier(float lineSpacingMultiplier) {
+        mCollapsingTextHelper.setLineSpacingMultiplier(lineSpacingMultiplier);
+    }
+
+    /**
+     * Gets the line spacing multiplier applied to each line in the expanded state
+     */
+    float getLineSpacingMultiplier() {
+        return mCollapsingTextHelper.getLineSpacingMultiplier();
     }
     // END MODIFICATION
 

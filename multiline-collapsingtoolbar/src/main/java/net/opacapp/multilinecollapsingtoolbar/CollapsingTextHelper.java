@@ -119,6 +119,8 @@ final class CollapsingTextHelper {
     private float mExpandedTextBlend;
     private float mExpandedFirstLineDrawX;
     private int maxLines = 3;
+    private float lineSpacingExtra = 0;
+    private float lineSpacingMultiplier = 1;
     // END MODIFICATION
 
     public CollapsingTextHelper(View view) {
@@ -281,6 +283,32 @@ final class CollapsingTextHelper {
 
     int getMaxLines() {
         return maxLines;
+    }
+    // END MODIFICATION
+
+    // BEGIN MODIFICATION: getter and setter methods for line spacing
+    void setLineSpacingExtra(float lineSpacingExtra) {
+        if (lineSpacingExtra != this.lineSpacingExtra) {
+            this.lineSpacingExtra = lineSpacingExtra;
+            clearTexture();
+            recalculate();
+        }
+    }
+
+    float getLineSpacingExtra() {
+        return lineSpacingExtra;
+    }
+
+    void setLineSpacingMultiplier(float lineSpacingMultiplier) {
+        if (lineSpacingMultiplier != this.lineSpacingMultiplier) {
+            this.lineSpacingMultiplier = lineSpacingMultiplier;
+            clearTexture();
+            recalculate();
+        }
+    }
+
+    float getLineSpacingMultiplier() {
+        return lineSpacingMultiplier;
     }
     // END MODIFICATION
 
@@ -698,7 +726,7 @@ final class CollapsingTextHelper {
 
             // BEGIN MODIFICATION: Text layout creation and text truncation
             StaticLayout layout = new StaticLayout(mText, mTextPaint, (int) availableWidth,
-                    Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+                    Layout.Alignment.ALIGN_NORMAL, lineSpacingMultiplier, lineSpacingExtra, false);
             CharSequence truncatedText;
             if (layout.getLineCount() > maxLines) {
                 int lastLine = maxLines - 1;
@@ -746,7 +774,7 @@ final class CollapsingTextHelper {
             }
 
             mTextLayout = new StaticLayout(mTextToDraw, mTextPaint, (int) availableWidth,
-                alignment, 1, 0, false);
+                alignment, lineSpacingMultiplier, lineSpacingExtra, false);
             // END MODIFICATION
         }
     }
