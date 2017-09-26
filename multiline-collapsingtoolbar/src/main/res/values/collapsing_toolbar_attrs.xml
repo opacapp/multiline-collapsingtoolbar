@@ -3,6 +3,8 @@
 <resources>
     <declare-styleable name="CollapsingToolbarLayoutExtension">
         <attr name="maxLines" format="integer" />
+        <attr name="lineSpacingExtra" format="float"/>
+        <attr name="lineSpacingMultiplier" format="float"/>
     </declare-styleable>
 </resources>
 <!--END MODIFICATION-->
