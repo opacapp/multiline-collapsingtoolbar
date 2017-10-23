@@ -615,10 +615,14 @@ final class CollapsingTextHelper {
                 mTextPaint.setAlpha((int) (mCollapsedTextBlend * 255));
                 canvas.drawText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length(), 0,
                         -ascent / mScale, mTextPaint);
+                // Remove ellipsis for Cross-section animation
+                String tmp = mTextToDrawCollapsed.toString().trim();
+                if(tmp.endsWith("\u2026")) {
+                    tmp = tmp.substring(0, tmp.length()-1);
+                }
                 // Cross-section between both texts (should stay at alpha = 255)
                 mTextPaint.setAlpha(255);
-                canvas.drawText(mTextToDraw, mTextLayout.getLineStart(0),
-                        mTextLayout.getLineEnd(0), 0, -ascent / mScale, mTextPaint);
+                canvas.drawText(tmp, 0, tmp.length(), 0, -ascent / mScale, mTextPaint);
             }
             // END MODIFICATION
         }
@@ -705,7 +709,7 @@ final class CollapsingTextHelper {
                 // If the scaled down size is larger than the actual collapsed width, we need to
                 // cap the available width so that when the expanded text scales down, it matches
                 // the collapsed width
-                availableWidth = Math.min(collapsedWidth / textSizeRatio, expandedWidth);
+                availableWidth = expandedWidth;
             } else {
                 // Otherwise we'll just use the expanded width
                 availableWidth = expandedWidth;
