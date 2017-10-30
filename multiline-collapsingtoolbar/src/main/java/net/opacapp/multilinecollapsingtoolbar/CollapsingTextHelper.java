@@ -27,6 +27,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.v4.math.MathUtils;
 import android.support.v4.text.TextDirectionHeuristicsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
@@ -327,14 +328,14 @@ final class CollapsingTextHelper {
     }
 
     void setCollapsedTypeface(Typeface typeface) {
-        if (mCollapsedTypeface != typeface) {
+        if (areTypefacesDifferent(mCollapsedTypeface, typeface)) {
             mCollapsedTypeface = typeface;
             recalculate();
         }
     }
 
     void setExpandedTypeface(Typeface typeface) {
-        if (mExpandedTypeface != typeface) {
+        if (areTypefacesDifferent(mExpandedTypeface, typeface)) {
             mExpandedTypeface = typeface;
             recalculate();
         }
@@ -361,7 +362,7 @@ final class CollapsingTextHelper {
      * A value of {@code 1.0} indicates that the layout is fully collapsed.
      */
     void setExpansionFraction(float fraction) {
-        fraction = MathUtils.constrain(fraction, 0f, 1f);
+        fraction = MathUtils.clamp(fraction, 0f, 1f);
 
         if (fraction != mExpandedFraction) {
             mExpandedFraction = fraction;
@@ -664,6 +665,10 @@ final class CollapsingTextHelper {
     }
     // END MODIFICATION
 
+    private boolean areTypefacesDifferent(Typeface first, Typeface second) {
+        return (first != null && !first.equals(second)) || (first == null && second != null);
+    }
+
     private void calculateUsingTextSize(final float textSize) {
         if (mText == null) return;
 
@@ -679,7 +684,7 @@ final class CollapsingTextHelper {
         if (isClose(textSize, mCollapsedTextSize)) {
             newTextSize = mCollapsedTextSize;
             mScale = 1f;
-            if (mCurrentTypeface != mCollapsedTypeface) {
+            if (areTypefacesDifferent(mCurrentTypeface, mCollapsedTypeface)) {
                 mCurrentTypeface = mCollapsedTypeface;
                 updateDrawText = true;
             }
@@ -689,7 +694,7 @@ final class CollapsingTextHelper {
             // END MODIFICATION
         } else {
             newTextSize = mExpandedTextSize;
-            if (mCurrentTypeface != mExpandedTypeface) {
+            if (areTypefacesDifferent(mCurrentTypeface, mExpandedTypeface)) {
                 mCurrentTypeface = mExpandedTypeface;
                 updateDrawText = true;
             }
