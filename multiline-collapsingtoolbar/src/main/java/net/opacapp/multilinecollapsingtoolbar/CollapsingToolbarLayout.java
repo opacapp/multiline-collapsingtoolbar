@@ -17,10 +17,8 @@
 package net.opacapp.multilinecollapsingtoolbar;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
-import static net.opacapp.multilinecollapsingtoolbar.MathUtils.constrain;
-import static net.opacapp.multilinecollapsingtoolbar.ViewUtils.objectEquals;
 
-import android.annotation.TargetApi;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -42,6 +40,8 @@ import android.support.design.R;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.math.MathUtils;
+import android.support.v4.util.ObjectsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.WindowInsetsCompat;
@@ -126,7 +126,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
     Drawable mStatusBarScrim;
     private int mScrimAlpha;
     private boolean mScrimsAreShown;
-    private ValueAnimatorCompat mScrimAnimator;
+    private ValueAnimator mScrimAnimator;
     private long mScrimAnimationDuration;
     private int mScrimVisibleHeightTrigger = -1;
 
@@ -332,7 +332,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
         }
 
         // If our insets have changed, keep them and invalidate the scroll ranges...
-        if (!objectEquals(mLastInsets, newInsets)) {
+        if (!ObjectsCompat.equals(mLastInsets, newInsets)) {
             mLastInsets = newInsets;
             requestLayout();
         }
@@ -404,7 +404,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
 
         if (mToolbarId != -1) {
             // If we have an ID set, try and find it and it's direct parent to us
-            mToolbar = (Toolbar) findViewById(mToolbarId);
+            mToolbar = findViewById(mToolbarId);
             if (mToolbar != null) {
                 mToolbarDirectChild = findDirectChild(mToolbar);
             }
@@ -470,6 +470,16 @@ public class CollapsingToolbarLayout extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         ensureToolbar();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        final int mode = MeasureSpec.getMode(heightMeasureSpec);
+        final int topInset = mLastInsets != null ? mLastInsets.getSystemWindowInsetTop() : 0;
+        if (mode == MeasureSpec.UNSPECIFIED && topInset > 0) {
+            // If we have a top inset and we're set to wrap_content height we need to make sure
+            // we add the top inset to our height, therefore we re-measure
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                    getMeasuredHeight() + topInset, MeasureSpec.EXACTLY);
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
     }
 
     @Override
@@ -657,16 +667,16 @@ public class CollapsingToolbarLayout extends FrameLayout {
     private void animateScrim(int targetAlpha) {
         ensureToolbar();
         if (mScrimAnimator == null) {
-            mScrimAnimator = ViewUtils.createAnimator();
+            mScrimAnimator = new ValueAnimator();
             mScrimAnimator.setDuration(mScrimAnimationDuration);
             mScrimAnimator.setInterpolator(
                     targetAlpha > mScrimAlpha
                             ? AnimationUtils.FAST_OUT_LINEAR_IN_INTERPOLATOR
                             : AnimationUtils.LINEAR_OUT_SLOW_IN_INTERPOLATOR);
-            mScrimAnimator.addUpdateListener(new ValueAnimatorCompat.AnimatorUpdateListener() {
+            mScrimAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
-                public void onAnimationUpdate(ValueAnimatorCompat animator) {
-                    setScrimAlpha(animator.getAnimatedIntValue());
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    setScrimAlpha((int) animator.getAnimatedValue());
                 }
             });
         } else if (mScrimAnimator.isRunning()) {
@@ -1247,7 +1257,6 @@ public class CollapsingToolbarLayout extends FrameLayout {
         }
 
         @RequiresApi(19)
-        @TargetApi(19)
         public LayoutParams(FrameLayout.LayoutParams source) {
             // The copy constructor called here only exists on API 19+.
             super(source);
@@ -1333,8 +1342,8 @@ public class CollapsingToolbarLayout extends FrameLayout {
 
                 switch (lp.mCollapseMode) {
                     case LayoutParams.COLLAPSE_MODE_PIN:
-                        offsetHelper.setTopAndBottomOffset(
-                                constrain(-verticalOffset, 0, getMaxOffsetForPinChild(child)));
+                        offsetHelper.setTopAndBottomOffset(MathUtils.clamp(
+                                -verticalOffset, 0, getMaxOffsetForPinChild(child)));
                         break;
                     case LayoutParams.COLLAPSE_MODE_PARALLAX:
                         offsetHelper.setTopAndBottomOffset(
