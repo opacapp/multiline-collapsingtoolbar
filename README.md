@@ -31,7 +31,7 @@ library to run with support versions other than that.**
 ## Usage
 The library's public API is nearly identical to the version from the support library, so you can use it as a drop-in replacement. We only added a `maxLines` attribute and corresponding getter and setter functions to the `CollapsingToolbarLayout` to make it possible to change the maximum number of lines, which is set to 3 by default.
 
-As the Design Support Library, it should be compatible with API 9 (Android 2.3) and above.
+As the Design Support Library, it should be compatible with API 14 (Android 4.0) and above.
 
 XML layout example:
 ```xml
