@@ -505,7 +505,7 @@ final class CollapsingTextHelper {
 
         // BEGIN MODIFICATION: calculate width using mTextLayout based on first line and store that padding
         width = mTextLayout != null ? mTextLayout.getLineWidth(0) : 0;
-        mExpandedFirstLineDrawX = mTextLayout != null ? mTextLayout.getLineLeft(0) : 0;
+        mExpandedFirstLineDrawX = mTextLayout != null ? mTextLayout.getLineStart(0) : 0;
         // END MODIFICATION
 
         final int expandedAbsGravity = GravityCompat.getAbsoluteGravity(mExpandedTextGravity,
@@ -590,7 +590,7 @@ final class CollapsingTextHelper {
             }
 
             // Compute where to draw mTextLayout for this frame
-            final float currentExpandedX = mCurrentDrawX + mTextLayout.getLineLeft(0) - mExpandedFirstLineDrawX * 2;
+            final float currentExpandedX = mCurrentDrawX + mTextLayout.getLineStart(0) - mExpandedFirstLineDrawX * 2;
             if (drawTexture) {
                 // If we should use a texture, draw it instead of text
                 // Expanded text
@@ -779,7 +779,7 @@ final class CollapsingTextHelper {
             }
 
             mTextLayout = new StaticLayout(mTextToDraw, mTextPaint, (int) availableWidth,
-                alignment, lineSpacingMultiplier, lineSpacingExtra, false);
+                    alignment, lineSpacingMultiplier, lineSpacingExtra, false);
             // END MODIFICATION
         }
     }
@@ -933,7 +933,7 @@ final class CollapsingTextHelper {
     }
 
     private static float lerp(float startValue, float endValue, float fraction,
-            Interpolator interpolator) {
+                              Interpolator interpolator) {
         if (interpolator != null) {
             fraction = interpolator.getInterpolation(fraction);
         }
