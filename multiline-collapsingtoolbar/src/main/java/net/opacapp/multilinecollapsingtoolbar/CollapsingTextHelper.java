@@ -616,14 +616,16 @@ final class CollapsingTextHelper {
                 mTextPaint.setAlpha((int) (mCollapsedTextBlend * 255));
                 canvas.drawText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length(), 0,
                         -ascent / mScale, mTextPaint);
+                // BEGIN MODIFICATION
                 // Remove ellipsis for Cross-section animation
                 String tmp = mTextToDrawCollapsed.toString().trim();
-                if(tmp.endsWith("\u2026")) {
-                    tmp = tmp.substring(0, tmp.length()-1);
+                if (tmp.endsWith("\u2026")) {
+                    tmp = tmp.substring(0, tmp.length() - 1);
                 }
                 // Cross-section between both texts (should stay at alpha = 255)
                 mTextPaint.setAlpha(255);
-                canvas.drawText(tmp, 0, tmp.length(), 0, -ascent / mScale, mTextPaint);
+                canvas.drawText(tmp, 0, mTextLayout.getLineEnd(0) <= tmp.length() ? mTextLayout.getLineEnd(0) : tmp.length(), 0, -ascent / mScale, mTextPaint);
+                // END MODIFICATION
             }
             // END MODIFICATION
         }
@@ -714,7 +716,10 @@ final class CollapsingTextHelper {
                 // If the scaled down size is larger than the actual collapsed width, we need to
                 // cap the available width so that when the expanded text scales down, it matches
                 // the collapsed width
+
+                // BEGIN MODIFICATION:
                 availableWidth = expandedWidth;
+                // END MODIFICATION
             } else {
                 // Otherwise we'll just use the expanded width
                 availableWidth = expandedWidth;
@@ -852,8 +857,12 @@ final class CollapsingTextHelper {
         }
         mCrossSectionTitleTexture = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(mCrossSectionTitleTexture);
-        c.drawText(mTextToDraw, mTextLayout.getLineStart(0),
-                mTextLayout.getLineEnd(0), 0, -mTextPaint.ascent() / mScale, mTextPaint);
+        String tmp = mTextToDrawCollapsed.toString().trim();
+        if (tmp.endsWith("\u2026")) {
+            tmp = tmp.substring(0, tmp.length() - 1);
+        }
+        c.drawText(tmp, 0,
+                mTextLayout.getLineEnd(0) <= tmp.length() ? mTextLayout.getLineEnd(0) : tmp.length(), 0, -mTextPaint.ascent() / mScale, mTextPaint);
         if (mTexturePaint == null) {
             // Make sure we have a paint
             mTexturePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
