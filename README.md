@@ -20,11 +20,12 @@ adding a new dependency statement.
 
 ```gradle
 dependencies {
-    compile 'net.opacapp:multiline-collapsingtoolbar:1.6.0'
+    compile 'net.opacapp:multiline-collapsingtoolbar:27.1.0'
 }
 ```
 
-The current version 1.6.0 of the library is based on the code and tested with the **Design Support Library version 27.0.0**.
+The current version 27.1.0 of the library is based on the code and tested with the **Design Support 
+Library version 27.1.0**.
 We'll try to keep up to date with new support library versions as soon as possible, but please **do not expect this
 library to run with support versions other than that.**
 
