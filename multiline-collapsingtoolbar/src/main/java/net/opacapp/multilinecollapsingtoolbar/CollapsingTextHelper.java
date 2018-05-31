@@ -122,6 +122,7 @@ final class CollapsingTextHelper {
     private int maxLines = 3;
     private float lineSpacingExtra = 0;
     private float lineSpacingMultiplier = 1;
+    private String mCustomCollapedTitle;
     // END MODIFICATION
 
     public CollapsingTextHelper(View view) {
@@ -462,7 +463,7 @@ final class CollapsingTextHelper {
         calculateUsingTextSize(mCollapsedTextSize);
 
         // BEGIN MODIFICATION: set mTextToDrawCollapsed and calculate width using it
-        mTextToDrawCollapsed = mTextToDraw;
+        mTextToDrawCollapsed = mCustomCollapedTitle == null ? mTextToDraw : mCustomCollapedTitle;
         float width = mTextToDrawCollapsed != null ?
             mTextPaint.measureText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length()) : 0;
         // END MODIFICATION
@@ -955,5 +956,9 @@ final class CollapsingTextHelper {
 
     private static boolean rectEquals(Rect r, int left, int top, int right, int bottom) {
         return !(r.left != left || r.top != top || r.right != right || r.bottom != bottom);
+    }
+
+    void setCollapsedText(String text) {
+        mCustomCollapedTitle = text;
     }
 }

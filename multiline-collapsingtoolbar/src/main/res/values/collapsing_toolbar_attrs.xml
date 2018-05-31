@@ -2,6 +2,7 @@
 <!--BEGIN MODIFICATION: Create an attribute for max line number-->
 <resources>
     <declare-styleable name="CollapsingToolbarLayoutExtension">
+        <attr name="collapsedTitle" format="string" />
         <attr name="maxLines" format="integer" />
         <attr name="lineSpacingExtra" format="float"/>
         <attr name="lineSpacingMultiplier" format="float"/>
