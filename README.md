@@ -5,8 +5,9 @@ which can deal with multiline titles (with a customizable maximum number of line
 expanded state. When collapsing the toolbar,  the lower lines of the title fade away to leave
 only the top line visible.
 
-**There are two issues ([180736](https://code.google.com/p/android/issues/detail?id=180736),
-[215056](https://code.google.com/p/android/issues/detail?id=215056)) in the Android Issue Tracker which request this and/or similar features to be added to the official Design Support Library. We encourage you to star these issues to help make this library obsolete (and relieve us of the burden of updating it with every new Support Library version) in the future.**
+## Information about compatibility with AndroidX
+
+We are currently not planning to update this library for support of the Android Support Library version 28 or the new AndroidX libraries, as has been discussed in [#62](https://github.com/opacapp/multiline-collapsingtoolbar/issues/62) and other places. Instead, we are trying to get our modifications merged into the official Material Components Android library. Please see [the PR](https://github.com/material-components/material-components-android/pull/413) for more details.
 
 ## Example
 Here you can see the library in action in the included demo app:
