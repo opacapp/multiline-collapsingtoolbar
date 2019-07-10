@@ -1,19 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "net.opacapp.multilinecollapsingtoolbar.demo"
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:27.1.1'
-    compile 'com.android.support:design:27.1.1'
+    compile 'androidx.appcompat:appcompat:1.0.2'
+    compile 'com.google.android.material:material:1.1.0-alpha01'
     compile project(':multiline-collapsingtoolbar')
 }
