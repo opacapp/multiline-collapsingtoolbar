@@ -1367,4 +1367,26 @@ public class CollapsingToolbarLayout extends FrameLayout {
                     Math.abs(verticalOffset) / (float) expandRange);
         }
     }
+
+    private CharSequence getTextToDraw() {
+        return mCollapsingTextHelper.getTextToDraw();
+    }
+
+    private CharSequence getText() {
+        return mCollapsingTextHelper.getText();
+    }
+
+    private void setExpandedTextSize(float size) {
+        mCollapsingTextHelper.setExpandedTextSize(size);
+    }
+
+    private float getExpandedTextSize() {
+        return mCollapsingTextHelper.getExpandedTextSize();
+    }
+
+    public void checkTextEllipsize(int decreaseRatio) {
+        while (!TextUtils.equals(getTextToDraw(), getText())) {
+            setExpandedTextSize(getExpandedTextSize() - decreaseRatio);
+        }
+    }
 }
