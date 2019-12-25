@@ -594,42 +594,49 @@ final class CollapsingTextHelper {
             if (drawTexture) {
                 // If we should use a texture, draw it instead of text
                 // Expanded text
-                mTexturePaint.setAlpha((int) (mExpandedTextBlend * 255));
+                applyExpandedTextAlpha(mTexturePaint);
                 canvas.drawBitmap(mExpandedTitleTexture, currentExpandedX, y, mTexturePaint);
                 // Collapsed text
-                mTexturePaint.setAlpha((int) (mCollapsedTextBlend * 255));
+                applyCollapsedTextAlpha(mTexturePaint);
                 canvas.drawBitmap(mCollapsedTitleTexture, x, y, mTexturePaint);
-                // Cross-section between both texts (should stay at alpha = 255)
-                mTexturePaint.setAlpha(255);
-                canvas.drawBitmap(mCrossSectionTitleTexture, x, y, mTexturePaint);
             } else {
                 // positon expanded text appropriately
                 canvas.translate(currentExpandedX, y);
                 // Expanded text
-                mTextPaint.setAlpha((int) (mExpandedTextBlend * 255));
+                applyExpandedTextAlpha(mTextPaint);
                 mTextLayout.draw(canvas);
 
                 // position the overlays
                 canvas.translate(x - currentExpandedX, 0);
 
                 // Collapsed text
-                mTextPaint.setAlpha((int) (mCollapsedTextBlend * 255));
+                applyCollapsedTextAlpha(mTextPaint);
                 canvas.drawText(mTextToDrawCollapsed, 0, mTextToDrawCollapsed.length(), 0,
                         -ascent / mScale, mTextPaint);
-                // BEGIN MODIFICATION
-                // Remove ellipsis for Cross-section animation
-                String tmp = mTextToDrawCollapsed.toString().trim();
-                if (tmp.endsWith("\u2026")) {
-                    tmp = tmp.substring(0, tmp.length() - 1);
-                }
-                // Cross-section between both texts (should stay at alpha = 255)
-                mTextPaint.setAlpha(255);
-                canvas.drawText(tmp, 0, mTextLayout.getLineEnd(0) <= tmp.length() ? mTextLayout.getLineEnd(0) : tmp.length(), 0, -ascent / mScale, mTextPaint);
-                // END MODIFICATION
             }
             // END MODIFICATION
         }
         canvas.restoreToCount(saveCount);
+    }
+
+    private void applyCollapsedTextAlpha(Paint paint) {
+        int alpha = (int) (mCollapsedTextBlend * 255);
+        int defaultAlpha = Color.alpha(getCurrentCollapsedTextColor());
+        if (alpha <= defaultAlpha) {
+            paint.setAlpha(alpha);
+        } else {
+            paint.setAlpha(defaultAlpha);
+        }
+    }
+
+    private void applyExpandedTextAlpha(Paint paint) {
+        int alpha = (int) (mExpandedTextBlend * 255);
+        int defaultAlpha = Color.alpha(getCurrentExpandedTextColor());
+        if (alpha <= defaultAlpha) {
+            paint.setAlpha(alpha);
+        } else {
+            paint.setAlpha(defaultAlpha);
+        }
     }
 
     private boolean calculateIsRtl(CharSequence text) {
