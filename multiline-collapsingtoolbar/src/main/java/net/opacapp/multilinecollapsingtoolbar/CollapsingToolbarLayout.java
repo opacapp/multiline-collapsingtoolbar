@@ -238,6 +238,7 @@ public class CollapsingToolbarLayout extends FrameLayout {
         // BEGIN MODIFICATION: set the value of maxNumberOfLines attribute to the mCollapsingTextHelper
         TypedArray typedArray = context.obtainStyledAttributes(attrs, net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension, defStyleAttr, 0);
         mCollapsingTextHelper.setMaxLines(typedArray.getInteger(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_maxLines, 3));
+        mCollapsingTextHelper.setCollapsedText(typedArray.getString(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_collapsedTitle));
         mCollapsingTextHelper.setLineSpacingExtra(typedArray.getFloat(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_lineSpacingExtra, 0));
         mCollapsingTextHelper.setLineSpacingMultiplier(typedArray.getFloat(net.opacapp.multilinecollapsingtoolbar.R.styleable.CollapsingToolbarLayoutExtension_lineSpacingMultiplier, 1));
         typedArray.recycle();

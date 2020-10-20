@@ -19,7 +19,8 @@
             android:layout_height="match_parent"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="@string/title"
+            app:title="@string/title_long"
+            app:collapsedTitle="@string/title_short"
             app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"
             app:maxLines="3"
             app:lineSpacingMultiplier="1.2">
